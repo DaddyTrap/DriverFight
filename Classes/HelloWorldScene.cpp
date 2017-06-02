@@ -1,4 +1,5 @@
 #include "HelloWorldScene.h"
+#include "TestScene.h"
 
 USING_NS_CC;
 
@@ -35,10 +36,16 @@ bool HelloWorld::init()
     //    you may modify it.
 
     // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
+    /*auto closeItem = MenuItemImage::create(
                                            "CloseNormal.png",
                                            "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));*/
+    auto closeItem = MenuItemImage::create(
+      "CloseNormal.png",
+      "CloseSelected.png",
+      [](Ref *) {
+      Director::getInstance()->replaceScene(TestScene::createScene());
+    });
     
 	closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
                                 origin.y + closeItem->getContentSize().height/2));

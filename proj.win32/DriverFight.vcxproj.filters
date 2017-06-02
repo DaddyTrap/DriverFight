@@ -10,6 +10,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\DriverFight">
+      <UniqueIdentifier>{e5d04275-1291-42ad-b038-935ccd3fc3ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -21,6 +24,15 @@
     <ClCompile Include="..\Classes\HelloWorldScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Skill.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SkillManager.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TestScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -30,6 +42,15 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Skill.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SkillManager.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TestScene.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
