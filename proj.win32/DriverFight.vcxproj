@@ -145,6 +145,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\Attack.cpp" />
+    <ClCompile Include="..\Classes\BaseSprite.cpp" />
+    <ClCompile Include="..\Classes\BattleSystem.cpp" />
+    <ClCompile Include="..\Classes\Fighter.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\Skill.cpp" />
     <ClCompile Include="..\Classes\SkillManager.cpp" />
@@ -153,6 +157,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\Attack.h" />
+    <ClInclude Include="..\Classes\BaseSprite.h" />
+    <ClInclude Include="..\Classes\BattleSystem.h" />
+    <ClInclude Include="..\Classes\Fighter.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\Skill.h" />
     <ClInclude Include="..\Classes\SkillManager.h" />

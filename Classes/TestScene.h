@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "SkillManager.h"
+#include "Fighter.h"
 
 USING_NS_CC;
 
@@ -19,6 +20,7 @@ private:
   Vec2 origin;
 
   SkillManager *skill_manager;
+  BattleSystem *battle_system;
 
   void addListener();
   void onKeyPressed(EventKeyboard::KeyCode code, Event *ev);

@@ -1,5 +1,6 @@
 #include "TestScene.h"
 #include "SkillManager.h"
+#include "Fighter.h"
 
 USING_NS_CC;
 
@@ -21,37 +22,32 @@ bool TestScene::init() {
 
   addListener();
 
-  // °´¼ü¹ÜÀí
-  skill_manager = SkillManager::create();
-  auto skill = new Skill("test", std::vector<std::pair<Skill::VirtualKey, int>>({
-    {Skill::DOWN, 10},
-    {Skill::RIGHT, 10},
-    {Skill::A, 10}
-  }), "test_listener");
-  skill_manager->addSkill(skill);
+  battle_system = BattleSystem::create();
+  battle_system->bindButtonToFighter({
+    { EventKeyboard::KeyCode::KEY_W,{ 0, BattleSystem::VirtualKey::UP } },
+    { EventKeyboard::KeyCode::KEY_S,{ 0, BattleSystem::VirtualKey::DOWN } },
+    { EventKeyboard::KeyCode::KEY_A,{ 0, BattleSystem::VirtualKey::LEFT } },
+    { EventKeyboard::KeyCode::KEY_D,{ 0, BattleSystem::VirtualKey::RIGHT } },
+    { EventKeyboard::KeyCode::KEY_J,{ 0, BattleSystem::VirtualKey::A } },
+    { EventKeyboard::KeyCode::KEY_K,{ 0, BattleSystem::VirtualKey::B } },
+    { EventKeyboard::KeyCode::KEY_L,{ 0, BattleSystem::VirtualKey::C } },
+    { EventKeyboard::KeyCode::KEY_UP_ARROW,{ 1, BattleSystem::VirtualKey::UP } },
+    { EventKeyboard::KeyCode::KEY_DOWN_ARROW,{ 1, BattleSystem::VirtualKey::DOWN } },
+    { EventKeyboard::KeyCode::KEY_LEFT_ARROW,{ 1, BattleSystem::VirtualKey::LEFT } },
+    { EventKeyboard::KeyCode::KEY_RIGHT_ARROW,{ 1, BattleSystem::VirtualKey::RIGHT } },
+    { EventKeyboard::KeyCode::KEY_KP_END,{ 1, BattleSystem::VirtualKey::A } },
+    { EventKeyboard::KeyCode::KEY_KP_DOWN,{ 1, BattleSystem::VirtualKey::B } },
+    { EventKeyboard::KeyCode::KEY_KP_PG_DOWN,{ 1, BattleSystem::VirtualKey::C } },
+  });
 
-  skill = new Skill("test1", std::vector<std::pair<Skill::VirtualKey, int>>({
-    { Skill::DOWN, 10 },
-    { Skill::LEFT, 10 },
-    { Skill::A, 10 }
-  }), "test_listener");
-  skill_manager->addSkill(skill);
+  auto fighter = Fighter::create(1000, 1000);
+  fighter->initWithFile("HelloWorld.png");
+  
+  fighter->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
-  skill = new Skill("test2", std::vector<std::pair<Skill::VirtualKey, int>>({
-    { Skill::LEFT, 10 },
-    { Skill::RIGHT, 10 },
-    { Skill::A, 10 }
-  }), "test_listener");
-  skill_manager->addSkill(skill);
+  battle_system->setFighter(fighter, 0);
 
-  skill = new Skill("test3", std::vector<std::pair<Skill::VirtualKey, int>>({
-    { Skill::RIGHT, 10 },
-    { Skill::LEFT, 10 },
-    { Skill::A, 10 }
-  }), "test_listener");
-  skill_manager->addSkill(skill);
-
-  this->addChild(skill_manager);
+  this->addChild(battle_system);
 
   scheduleUpdate();
 
@@ -75,29 +71,14 @@ void TestScene::addListener() {
 }
 
 void TestScene::onKeyPressed(EventKeyboard::KeyCode code, Event * ev) {
-  switch (code) {
-  case EventKeyboard::KeyCode::KEY_W:
-    skill_manager->pressKey(Skill::UP);
-    break;
-  case EventKeyboard::KeyCode::KEY_A:
-    skill_manager->pressKey(Skill::LEFT);
-    break;
-  case EventKeyboard::KeyCode::KEY_S:
-    skill_manager->pressKey(Skill::DOWN);
-    break;
-  case EventKeyboard::KeyCode::KEY_D:
-    skill_manager->pressKey(Skill::RIGHT);
-    break;
-  case EventKeyboard::KeyCode::KEY_J:
-    skill_manager->pressKey(Skill::A);
-    break;
-  default:
-    break;
-  }
+  battle_system->pressKey(code);
 }
 
-void TestScene::onKeyReleased(EventKeyboard::KeyCode code, Event * ev) {}
+void TestScene::onKeyReleased(EventKeyboard::KeyCode code, Event * ev) {
+  battle_system->releaseKey(code);
+}
 
 void TestScene::update(float dt) {
-  skill_manager->update(dt);
+  // skill_manager->update(dt);
+  battle_system->update(dt);
 }
