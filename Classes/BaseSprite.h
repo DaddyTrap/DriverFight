@@ -2,6 +2,8 @@
 #define __BASE_SPRITE_H__
 
 #include "cocos2d.h"
+
+#include "Predefine.h"
 // #include "BattleSystem.h"
 
 class BattleSystem;
@@ -22,10 +24,17 @@ public:
   void setPosition(const Vec2& pos) override;
 
   bool detectCollision(const BaseSprite* other);
+  void update(float dt) override;
+
+  bool is_destroy = false;
 
 protected:
+#ifdef __DF_DEBUG__
+  DrawNode *_bounding_display_node = nullptr;
+#endif
   Rect DFBoudingBox;
   BattleSystem *system;
+
 };
 
 #endif // !__BASE_SPRITE_H__

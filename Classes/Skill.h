@@ -3,6 +3,9 @@
 
 #include <functional>
 #include <cocos2d.h>
+
+#include "Predefine.h"
+
 #include "BattleSystem.h"
 
 USING_NS_CC;
@@ -30,8 +33,10 @@ public:
   // Skill(const string &filepath);
   ~Skill();
   const string name;
-  void pressKey(const BattleSystem::VirtualKey &key);
+  bool pressKey(const BattleSystem::VirtualKey &key);
   bool setEventName(const string &eventName);
+  Fighter* getOwner();
+  void setOwner(Fighter *fighter);
 
   void stepTime();
 
@@ -44,6 +49,7 @@ private:
   unsigned int passed_time = 0;
   bool should_reset_time = 0;
   string eventName;
+  Fighter *owner = nullptr;
   std::vector<std::pair<BattleSystem::VirtualKey, int>> keys;
 };
 

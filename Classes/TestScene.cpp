@@ -1,6 +1,7 @@
 #include "TestScene.h"
 #include "SkillManager.h"
 #include "Fighter.h"
+#include "Attack.h"
 
 USING_NS_CC;
 
@@ -38,14 +39,50 @@ bool TestScene::init() {
     { EventKeyboard::KeyCode::KEY_KP_END,{ 1, BattleSystem::VirtualKey::A } },
     { EventKeyboard::KeyCode::KEY_KP_DOWN,{ 1, BattleSystem::VirtualKey::B } },
     { EventKeyboard::KeyCode::KEY_KP_PG_DOWN,{ 1, BattleSystem::VirtualKey::C } },
+    { EventKeyboard::KeyCode::KEY_1,{ 1, BattleSystem::VirtualKey::A } },
+    { EventKeyboard::KeyCode::KEY_2,{ 1, BattleSystem::VirtualKey::B } },
+    { EventKeyboard::KeyCode::KEY_3,{ 1, BattleSystem::VirtualKey::C } },
   });
 
+  auto bg = Sprite::create("bg.png");
+  bg->setScaleX(visibleSize.width / bg->getContentSize().width);
+  bg->setScaleY(visibleSize.height / bg->getContentSize().height);
+  bg->setPosition(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
+  this->addChild(bg, -1);
+
+  auto texture = Director::getInstance()->getTextureCache()->textureForKey("animations/fighter_walk.png");
+  auto frame0 = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 300, 300)));
+
   auto fighter = Fighter::create(1000, 1000);
-  fighter->initWithFile("HelloWorld.png");
-  
+  fighter->setSkills("skills/fighter_skill.json");
+  fighter->initWithSpriteFrame(frame0);
+  fighter->idle_animation = AnimationCache::getInstance()->getAnimation("fighter_idle");
+  fighter->move_animation = AnimationCache::getInstance()->getAnimation("fighter_move");
+  fighter->jump_animation = AnimationCache::getInstance()->getAnimation("fighter_jump");
+  fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
+  fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
+  auto bounding = fighter->getBoundingBox();
+  fighter->setDFBoundingBox(Rect(0, 0, 0.37975 * bounding.size.width, bounding.size.height));
+  fighter->punch_info = AttackInfo("attacks/punch.json");
+  fighter->kick_info = AttackInfo("attacks/kick.json");
+  battle_system->setFighter(fighter, 0);
   fighter->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
-  battle_system->setFighter(fighter, 0);
+  fighter = Fighter::create(1000, 1000);
+  fighter->setSkills("skills/fighter_skill.json");
+  fighter->initWithSpriteFrame(frame0);
+  fighter->idle_animation = AnimationCache::getInstance()->getAnimation("fighter_idle");
+  fighter->move_animation = AnimationCache::getInstance()->getAnimation("fighter_move");
+  fighter->jump_animation = AnimationCache::getInstance()->getAnimation("fighter_jump");
+  fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
+  fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
+  bounding = fighter->getBoundingBox();
+  fighter->setDFBoundingBox(Rect(0, 0, 0.37975 * bounding.size.width, bounding.size.height));
+  battle_system->setFighter(fighter, 1);
+  fighter->setPosition(Vec2(origin.x + visibleSize.width / 2 + 300.0f, origin.y + visibleSize.height / 2));
+
+  battle_system->setAnchorPoint(Vec2(0.5, 0.5));
+  battle_system->setPositionY(100.0f + origin.y + 100.0f);
 
   this->addChild(battle_system);
 

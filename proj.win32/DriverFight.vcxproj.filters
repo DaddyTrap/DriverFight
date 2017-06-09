@@ -45,6 +45,9 @@
     <ClCompile Include="..\Classes\BaseSprite.cpp">
       <Filter>src\DriverFight</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\AttackInfo.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -75,6 +78,12 @@
       <Filter>src\DriverFight</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\BaseSprite.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Predefine.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AttackInfo.h">
       <Filter>src\DriverFight</Filter>
     </ClInclude>
   </ItemGroup>

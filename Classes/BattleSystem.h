@@ -7,6 +7,8 @@
 // #include "Attack.h"
 #include <memory>
 
+#include "Predefine.h"
+
 class Fighter;
 class Attack;
 class SkillManager;

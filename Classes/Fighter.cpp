@@ -1,12 +1,13 @@
 #include "Fighter.h"
 #include "SkillManager.h"
 #include "json/document.h"
+#include "Attack.h"
 
 const std::list<Fighter::State> Fighter::VALID_NEXT_STATE[8] = {
   { Fighter::State::JUMP, Fighter::State::ATTACK, Fighter::State::MOVE, Fighter::State::STUN, Fighter::State::SQUAT },    // IDLE
-  { Fighter::State::IDLE, Fighter::State::MOVE, Fighter::State::JUMP2, Fighter::State::ATTACK, Fighter::State::STUN },    // JUMP
+  { Fighter::State::IDLE, /*Fighter::State::MOVE,*/ Fighter::State::JUMP2, Fighter::State::ATTACK, Fighter::State::STUN },    // JUMP
   { Fighter::State::IDLE, Fighter::State::ATTACK },                                                 // JUMP2
-  { Fighter::State::IDLE, Fighter::State::STUN },                                                   // ATTACK
+  { /*Fighter::State::IDLE,*/ Fighter::State::STUN },                                                   // ATTACK
   { Fighter::State::IDLE, Fighter::State::JUMP, Fighter::State::DEFENCE, Fighter::State::STUN, Fighter::State::ATTACK },  // MOVE
   { Fighter::State::IDLE, Fighter::State::JUMP },                                                                         // STUN
   { Fighter::State::IDLE, Fighter::State::MOVE },                                                   // DEFENCE
@@ -31,10 +32,14 @@ Fighter::Fighter() {}
 Fighter::~Fighter() {}
 
 Fighter::Fighter(int max_hp, int max_spc, const std::list<Skill*> &skills, const Rect &bounding, BattleSystem *system) :
-  max_hp(max_hp), max_spc(max_spc), skills(skills), BaseSprite(bounding, system) {
-  _skill_manager.reset(new SkillManager);
+  max_hp(max_hp), max_spc(max_spc), hp(max_hp), spc(max_spc), skills(skills), BaseSprite(bounding, system) {
+  /*_skill_manager.reset(new SkillManager);
   for (auto &val : skills) {
     this->_skill_manager->addSkill(val);
+  }*/
+  this->skills = skills;
+  for (auto &i : skills) {
+    i->setOwner(this);
   }
 }
 
@@ -57,6 +62,9 @@ const std::list<Skill*>& Fighter::getSkills() const {
 
 void Fighter::setSkills(const std::list<Skill*> &skills) {
   this->skills = skills;
+  for (auto &i : skills) {
+    i->setOwner(this);
+  }
 }
 /*
 出招表Json格式
@@ -78,21 +86,25 @@ void Fighter::setSkills(const std::string & filepath) {
     std::vector<std::pair<BattleSystem::VirtualKey, int>> keys;
     auto key_size = json_doc[i]["keys"].Capacity();
     auto &json_keys = json_doc[i]["keys"];
-    for (int j = 0; j < size; ++j) {
-      keys.push_back(std::make_pair(STRING_KEY_MAP[json_keys[i][0].GetString()], json_keys[i][1].GetInt()));
+    auto keys_size = json_keys.Capacity();
+    for (int j = 0; j < keys_size; ++j) {
+      keys.push_back(std::make_pair(STRING_KEY_MAP[json_keys[j][0].GetString()], json_keys[j][1].GetInt()));
     }
     skills.push_back(new Skill(name, keys));
+  }
+  for (auto &i : skills) {
+    i->setOwner(this);
   }
 }
 
 void Fighter::update(float dt) {
-  CCLOG("%d", state);
+  BaseSprite::update(dt);
   // 状态时间变化
   if (state_time > 0.0f) {
     // 只有stun和attack会由时间触发状态转变，且会转变为idle
     if (state_time - dt <= 0.0f) {
       // 是时候进入下一状态了
-      resetState();
+      resetState(true);
       state_time = -1;
     } else {
       // 继续计时
@@ -102,7 +114,7 @@ void Fighter::update(float dt) {
 
   // 水平移动状态
   if (state == MOVE || (state == JUMP && (left_holding || right_holding))) {
-    dir = right_holding;
+    this->setDir(right_holding);
     velocity.x = dir ? speed : -speed;
   } else {
     velocity.x = 0;
@@ -127,7 +139,10 @@ void Fighter::update(float dt) {
   this->setPosition(predict_pos); // 真正设置移动后位置
 
   // Skill管理器
-  _skill_manager->update(dt);
+  //_skill_manager->update(dt);
+  for (auto &i : skills) {
+    i->stepTime();
+  }
 }
 
 void Fighter::punch() {}
@@ -143,12 +158,43 @@ Attack * Fighter::spawnAttack(int damage, float lifetime, const std::string& fil
   atk->initWithFile(filepath);
   atk->damage = damage;
   atk->lifetime = lifetime;
+  atk->stuntime = 2.0f;
+  // set bounding
+  atk->setDFBoundingBox(atk->getBoundingBox());
+  /*auto offset = Vec2(this->getBoundingBox().size.width / 2 + atk->getBoundingBox().size.width / 2, 0);
+  if (dir) {
+    atk->setPosition(this->getPosition() + offset);
+  } else {
+    atk->setPosition(this->getPosition() - offset);
+  }*/
+  atk->setOwner(this);
+  this->system->addAttack(atk);
+  return atk;
+}
+
+Attack * Fighter::spawnAttack(const AttackInfo &info) {
+  auto atk = Attack::create();
+  atk->initWithAttackInfo(info);
   atk->setOwner(this);
   this->system->addAttack(atk);
   return atk;
 }
 
 void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
+  //_skill_manager->pressKey(key);
+  Skill::SkillEventArgs skill_args_to_trigger("", Skill::FINISHED);
+  bool skill_flag = false;
+  for (auto &i : skills) {
+    if (i->pressKey(key) && !skill_flag) {
+      skill_flag = true;
+      skill_args_to_trigger = Skill::SkillEventArgs(i->name, Skill::FINISHED);
+    }
+  }
+  if (skill_flag) {
+    this->triggerSkill(skill_args_to_trigger);
+    return;
+  }
+
   switch (key) {
   case BattleSystem::UP:
     if (this->setState(JUMP)) {
@@ -160,25 +206,32 @@ void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
   case BattleSystem::LEFT:
     left_holding = true;
     if (this->setState(MOVE)) {
-      this->dir = false;
+      this->setDir(false);
     }
     break;
   case BattleSystem::RIGHT:
     right_holding = true;
     if (this->setState(MOVE)) {
-      this->dir = true;
+      this->setDir(true);
     }
     break;
   case BattleSystem::A:
+    this->atk_type = PUNCH;
+    if (this->setState(ATTACK)) {
+      this->spawnAttack(punch_info);
+    }
     break;
   case BattleSystem::B:
+    this->atk_type = KICK;
+    if (this->setState(ATTACK)) {
+      this->spawnAttack(kick_info);
+    }
     break;
   case BattleSystem::C:
     break;
   default:
     break;
   }
-  _skill_manager->pressKey(key);
 }
 
 void Fighter::releaseKey(const BattleSystem::VirtualKey & key) {
@@ -189,22 +242,22 @@ void Fighter::releaseKey(const BattleSystem::VirtualKey & key) {
     break;
   case BattleSystem::LEFT:
     left_holding = false;
-    if (right_holding) {
-      this->dir = true;
+    if (right_holding && (state == MOVE || state == JUMP)) {
+      this->setDir(true);
       break;
     }
     if (resetState()) {
-      this->dir = false;
+      this->setDir(false);
     }
     break;
   case BattleSystem::RIGHT:
     right_holding = false;
-    if (left_holding) {
-      this->dir = false;
+    if (left_holding && (state == MOVE || state == JUMP)) {
+      this->setDir(false);
       break;
     }
     if (resetState()) {
-      this->dir = true;
+      this->setDir(true);
     }
     break;
   case BattleSystem::A:
@@ -218,18 +271,18 @@ void Fighter::releaseKey(const BattleSystem::VirtualKey & key) {
   }
 }
 
-bool Fighter::resetState() {
+bool Fighter::resetState(bool force) {
   // 如果正在按键，尝试改为MOVE状态
   if (left_holding || right_holding) {
-    bool result = setState(MOVE);
+    bool result = setState(MOVE, -1.0f, force);
     // 成功则return，失败则继续
     if (result) return true;
   }
   // (空中则JUMP，地上则IDLE)
   if (fabs(this->getPosition().y - 0.0f) < 0.01f) {
-    return setState(IDLE);
+    return setState(IDLE, -1.0f, force);
   } else {
-    return setState(JUMP);
+    return setState(JUMP, -1.0f, force);
   }
 }
 
@@ -237,6 +290,12 @@ void Fighter::hitOtherCallback(EventCustom *custom) {
   auto args = static_cast<BattleSystem::AttackHitEventArgs*>(custom->getUserData());
 
   delete args;
+}
+
+void Fighter::hitByOtherCallback(BattleSystem::AttackHitEventArgs args) {
+  auto stuntime = args.atk->stuntime;
+  this->setState(STUN, stuntime);
+  this->damage(args.atk);
 }
 
 void Fighter::hitByOtherCallback(EventCustom *custom) {
@@ -253,23 +312,67 @@ void Fighter::triggerSkill(EventCustom *custom) {
   delete args;
 }
 
-bool Fighter::setState(Fighter::State next_state, float time) {
-  if (this->state == next_state) return false;
+void Fighter::triggerSkill(Skill::SkillEventArgs args) {
+  CCLOG("Skill: %s", args.name.c_str());
+}
+
+bool Fighter::setState(Fighter::State next_state, float time, bool force) {
   bool flag = false;
-  for (auto &j : VALID_NEXT_STATE[this->state]) {
-    if (next_state == j) {
-      flag = true;
-      break;
+  if (!force) {
+    if (this->state == next_state) return false;
+    if (this->state_time > 0) return false;
+    for (auto &j : VALID_NEXT_STATE[this->state]) {
+      if (next_state == j) {
+        flag = true;
+        break;
+      }
     }
   }
-  if (flag) {
+  if (flag || force) {
+    state_time = time;
     state = next_state;
+    switch (state) {
+    case MOVE:
+      this->stopAllActions();
+      this->runAction(RepeatForever::create(Animate::create(move_animation)));
+      break;
+    case IDLE:
+      this->stopAllActions();
+      this->runAction(RepeatForever::create(Animate::create(idle_animation)));
+      break;
+    case ATTACK:
+      this->stopAllActions();
+      if (atk_type == PUNCH) {
+        this->runAction(Sequence::create(Animate::create(attack_animations[0]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
+      } else if (atk_type == KICK) {
+        this->runAction(Sequence::create(Animate::create(attack_animations[1]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
+      } else if (atk_type == SKILL) {
+        this->runAction(Sequence::create(Animate::create(attack_animations[2]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
+      }
+      break;
+    case JUMP:
+      this->stopAllActions();
+      this->runAction(Animate::create(jump_animation));
+      break;
+    default:
+      break;
+    }
     return true;
   }
   return false;
 }
 
+const Fighter::State & Fighter::getState() const {
+  // TODO: 在此处插入 return 语句
+  return state;
+}
+
 void Fighter::setSkillCallback(std::string eventname) {
-  auto listener = EventListenerCustom::create(eventname, CC_CALLBACK_1(Fighter::triggerSkill, this));
-  _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+  //auto listener = EventListenerCustom::create(eventname, CC_CALLBACK_1(Fighter::triggerSkill, this));
+  //_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void Fighter::setDir(bool dir) {
+  this->setFlippedX(dir);
+  this->dir = dir;
 }

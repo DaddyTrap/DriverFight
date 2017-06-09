@@ -2,6 +2,9 @@
 #define __SKILL_MANAGER_H__
 
 #include "cocos2d.h"
+
+#include "Predefine.h"
+
 #include "BattleSystem.h"
 
 class Skill;
