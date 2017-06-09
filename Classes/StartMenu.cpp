@@ -1,7 +1,7 @@
 #include "StartMenu.h"  
 #include "RotateMenu.h"  
 #include "GameScene.h"
-
+#include "AboutScene.h"
 USING_NS_CC;
 typedef struct SceneList {
   const char *name;
@@ -69,15 +69,6 @@ bool StartMenu::init() {
   this->addChild(menu, 2);
 
 
-  for (int i = 0; i < 3; i++) {
-    char str[20];
-    sprintf(str, "Demo1/item%d.jpg", i + 1);
-    sprite[i] = Sprite::create(str);
-    sprite[i]->setAnchorPoint(Vec2(0.5f, 0.5f));
-    sprite[i]->setPosition(visibleSize / 2);
-    this->addChild(sprite[i]);
-  }
-  hideAllSprite();
 
   /////////////////////////////  
   // 3. add your codes below...  
@@ -119,16 +110,10 @@ void StartMenu::menuItem1Callback(cocos2d::Ref* pSender) {
   Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, GameScene::createScene()));
 }
 void StartMenu::menuItem2Callback(cocos2d::Ref* pSender) {
-
+  Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, AboutScene::createScene()));
 }
 void StartMenu::menuItem3Callback(cocos2d::Ref* pSender) {
   Director::getInstance()->end();
 }
 
 
-void StartMenu::hideAllSprite() {
-  for (auto p : sprite) {
-    if (p->isVisible())
-      p->setVisible(false);
-  }
-}

@@ -24,7 +24,30 @@ bool AboutScene::init() {
 
   Size visibleSize = Director::getInstance()->getVisibleSize();
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
+  CCSize size = CCDirector::sharedDirector()->getVisibleSize();
 
+  //创建要显示的文字  
+  text = CCLabelTTF::create("Driver Fight\nCreated by +C,zh,wh\nIt's a Game just for fun\nIt's Not about technology.\nit's about philosophy!\nFor player1, WASD->move, J->hand, K->leg\nFor player2, Arrows->move, 1->hand, 2->leg\n", "", 30);
+  text->setPosition(ccp(400, -120));
 
+  //绘制裁剪区域  
+  CCDrawNode* shap = CCDrawNode::create();
+  CCPoint point[4] = { ccp(0,0), ccp(800, 0), ccp(800, 500), ccp(0, 500) };
+  shap->drawPolygon(point, 4, ccc4f(355, 255, 255, 255), 2, ccc4f(255, 255, 255, 255));
+  CCClippingNode* cliper = CCClippingNode::create();
+  cliper->setStencil(shap);
+  cliper->setAnchorPoint(ccp(.5, .5));
+  cliper->setPosition(ccp(0, 0));
+  addChild(cliper);
+  //把要滚动的文字加入到裁剪区域  
+  cliper->addChild(text);
+
+  //文字滚动，超出范围后从新开始  
+  schedule(schedule_selector(AboutScene::rollText));
   return true;
+
+}
+
+void AboutScene::rollText(float) {
+  text->getPositionY() > 600 ? text->setPositionY(-150) : text->setPositionY(text->getPositionY() + 2);
 }

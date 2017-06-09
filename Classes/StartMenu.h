@@ -16,8 +16,7 @@ public:
   void menuItem3Callback(cocos2d::Ref* pSender);
   void menuItem4Callback(cocos2d::Ref* pSender);
   void menuItem5Callback(cocos2d::Ref* pSender);
-  void hideAllSprite();
-  cocos2d::Sprite *sprite[3];
+
   // implement the "static create()" method manually  
   CREATE_FUNC(StartMenu);
 };
