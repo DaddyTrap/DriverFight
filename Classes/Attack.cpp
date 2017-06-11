@@ -10,26 +10,34 @@ Fighter * Attack::getOwner() const {
 }
 
 // Caution! 副作用：根据 initial_pos ，将自身放置在与owner位置有关的位置上
+// 将会设置好attack的sprite位置、DFBoundingBox位置
 void Attack::setOwner(Fighter * owner) {
   this->owner = owner;
   //this->setPosition(owner->getPosition() + this->initial_pos);
   auto owner_bounding = owner->getDFBoundingBox();
-  this->DFBoudingBox.origin = owner_bounding.origin;
+  auto atk_sp_box = this->getBoundingBox();
+
+  // DFBoundingBox size
+  this->DFBoudingBox.size.width = this->size.x * owner_bounding.size.width;
+  this->DFBoudingBox.size.height = this->size.y * owner_bounding.size.height;
+
+  Vec2 new_initial = initial_pos;
+  Vec2 atk_bounding_offset;
   if (!owner->dir) { // 向左
-    this->DFBoudingBox.origin.x += owner_bounding.size.width * this->initial_pos.x;
-    this->DFBoudingBox.origin.y += owner_bounding.size.height * this->initial_pos.y;
+    atk_bounding_offset.x = owner_bounding.size.width * new_initial.x;
+    atk_bounding_offset.y = owner_bounding.size.height * new_initial.y;
   } else {
-    Vec2 new_initial = initial_pos;
     if (initial_pos.x < 0.5f) { // 对称轴 0.5f
       new_initial.x += (0.5f - initial_pos.x) * 2 - this->size.x;
     } else {
       new_initial.x -= (initial_pos.x - 0.5f) * 2 + this->size.x;
     }
-    this->DFBoudingBox.origin.x += owner_bounding.size.width * new_initial.x;
-    this->DFBoudingBox.origin.y += owner_bounding.size.height * new_initial.y;
+    atk_bounding_offset.x += owner_bounding.size.width * new_initial.x;
+    atk_bounding_offset.y += owner_bounding.size.height * new_initial.y;
   }
-  this->DFBoudingBox.size.width = this->size.x * owner_bounding.size.width;
-  this->DFBoudingBox.size.height = this->size.y * owner_bounding.size.height;
+  this->setPosition(Vec2(atk_bounding_offset.x - owner_bounding.size.width / 2 + atk_sp_box.size.width / 2, atk_bounding_offset.y - owner_bounding.size.height / 2 + atk_sp_box.size.height / 2));
+  this->DFBoudingBox.origin = owner_bounding.origin;
+  this->DFBoudingBox.origin += atk_bounding_offset;
   this->real_x_speed = owner->dir ? -x_speed * owner_bounding.size.width : x_speed * owner_bounding.size.width;
   this->real_y_speed = owner_bounding.size.height;
 }
