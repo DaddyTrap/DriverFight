@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
-
+#include "StartMenu.h"
+#include "AboutScene.h"
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(800, 600);
@@ -68,7 +68,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
   register_all_packages();
 
   // create a scene. it's an autorelease object
-  auto scene = HelloWorld::createScene();
+  auto sb = UserDefault::getInstance()->getStringForKey("first");
+
+  if (sb == "")
+    UserDefault::getInstance()->setStringForKey("first", "true");
+  auto scene = sb == "" ? AboutScene::createScene() :StartMenu::createScene();
 
   // load resources
   auto texture = director->getTextureCache()->addImage("animations/fighter_walk.png");
