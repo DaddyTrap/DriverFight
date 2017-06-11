@@ -1,0 +1,8 @@
+{
+  "damage": 50,
+  "lifetime": 0.48,
+  "stuntime": 0.3,
+  "x_speed": -0.5825,
+  "initial_pos": [ -0.17, 0.49367 ],
+  "size":  [0.25317, 0.25317]
+}

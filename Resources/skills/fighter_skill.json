@@ -1,0 +1,10 @@
+[
+  {
+    "name": "fireball",
+    "keys": [
+      ["DOWN", 6],
+      ["RIGHT", 6],
+      ["A", 10]
+    ]
+  }
+]
