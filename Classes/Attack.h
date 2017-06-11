@@ -21,9 +21,9 @@ public:
   int damage;            // 造成的伤害
   float lifetime;        // 生命时间
   float stuntime;        // 造成的硬直时间
-  float x_speed;         // 移速
-  float real_x_speed, real_y_speed;
-  std::function<float(float)> routeFunc; // 参数为dx，返回值为dy
+  // float x_speed;         // 移速
+  float real_width_scale, real_height_scale;
+  std::function<Vec2(float)> routeFunc; // 参数为dt，返回值为(x,y)
   Vec2 initial_pos, size;      // 初始位置 (相对fighter的偏移)
 
   Fighter* getOwner() const;
@@ -36,7 +36,7 @@ public:
   void update(float dt) override;
 private:
   Fighter *owner;
-  float dx = 0.0f, dy = 0.0f;
+  float total_dt = 0.0f;
 };
 
 #endif // !__ATTACK_H__

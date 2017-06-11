@@ -19,12 +19,12 @@ AttackInfo::AttackInfo(const std::string & filepath) {
   damage = json_doc["damage"].GetInt();
   lifetime = json_doc["lifetime"].GetDouble();
   stuntime = json_doc["stuntime"].GetDouble();
-  x_speed = json_doc["x_speed"].GetDouble();
+  //x_speed = json_doc["x_speed"].GetDouble();
   initial_pos = Vec2(json_doc["initial_pos"][0].GetDouble(), json_doc["initial_pos"][1].GetDouble());
   size = Vec2(json_doc["size"][0].GetDouble(), json_doc["size"][1].GetDouble());
 
-  routeFunc = [](float x) { return 0.0f; };
+  routeFunc = [](float dt) { return Vec2(); };
 }
 
-AttackInfo::AttackInfo(int damage, float lifetime, float stuntime, float x_speed, Vec2 initial_pos, std::function<float(float)> routeFunc)
-  : damage(damage), lifetime(lifetime), stuntime(stuntime), x_speed(x_speed), routeFunc(routeFunc), initial_pos(initial_pos) {}
+AttackInfo::AttackInfo(int damage, float lifetime, float stuntime, float x_speed, Vec2 initial_pos, std::function<Vec2(float)> routeFunc)
+  : damage(damage), lifetime(lifetime), stuntime(stuntime), /*x_speed(x_speed),*/ routeFunc(routeFunc), initial_pos(initial_pos) {}

@@ -53,18 +53,29 @@ bool TestScene::init() {
   auto texture = Director::getInstance()->getTextureCache()->textureForKey("animations/fighter_walk.png");
   auto frame0 = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 300, 300)));
 
+  AttackInfo punch_info = AttackInfo("attacks/punch.json");
+  punch_info.routeFunc = [](float dt) {
+    return Vec2(-0.5825f * dt, 0);
+  };
+  AttackInfo kick_info = AttackInfo("attacks/kick.json");
+  kick_info.routeFunc = [](float dt) {
+    return Vec2(-3.2f * dt, 0);
+  };
+
   auto fighter = Fighter::create(1000, 1000);
   fighter->setSkills("skills/fighter_skill.json");
   fighter->initWithSpriteFrame(frame0);
   fighter->idle_animation = AnimationCache::getInstance()->getAnimation("fighter_idle");
   fighter->move_animation = AnimationCache::getInstance()->getAnimation("fighter_move");
   fighter->jump_animation = AnimationCache::getInstance()->getAnimation("fighter_jump");
+  fighter->stun_animation = AnimationCache::getInstance()->getAnimation("fighter_stun");
   fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
   fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
+  fighter->attack_animations[2] = AnimationCache::getInstance()->getAnimation("fighter_skill");
   auto bounding = fighter->getBoundingBox();
   fighter->setDFBoundingBox(Rect(0, 0, 0.37975 * bounding.size.width, bounding.size.height));
-  fighter->punch_info = AttackInfo("attacks/punch.json");
-  fighter->kick_info = AttackInfo("attacks/kick.json");
+  fighter->punch_info = punch_info;
+  fighter->kick_info = kick_info;
   battle_system->setFighter(fighter, 0);
   fighter->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
@@ -74,6 +85,7 @@ bool TestScene::init() {
   fighter->idle_animation = AnimationCache::getInstance()->getAnimation("fighter_idle");
   fighter->move_animation = AnimationCache::getInstance()->getAnimation("fighter_move");
   fighter->jump_animation = AnimationCache::getInstance()->getAnimation("fighter_jump");
+  fighter->stun_animation = AnimationCache::getInstance()->getAnimation("fighter_stun");
   fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
   fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
   bounding = fighter->getBoundingBox();

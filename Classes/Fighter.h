@@ -14,7 +14,7 @@
 
 USING_NS_CC;
 
-constexpr float G = 200.0f;
+constexpr float G = 3200.0f;
 
 class Fighter : public BaseSprite {
 public:

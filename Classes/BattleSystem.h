@@ -52,6 +52,7 @@ public:
   void pressKey(EventKeyboard::KeyCode code);
   void releaseKey(EventKeyboard::KeyCode code);
   void bindButtonToFighter(const std::map<EventKeyboard::KeyCode, std::pair<int, VirtualKey>> &keymap);
+
 private:
 };
 

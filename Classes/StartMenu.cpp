@@ -1,6 +1,6 @@
 #include "StartMenu.h"  
 #include "RotateMenu.h"  
-#include "GameScene.h"
+#include "TestScene.h"
 #include "AboutScene.h"
 USING_NS_CC;
 typedef struct SceneList {
@@ -107,7 +107,7 @@ void StartMenu::menuCloseCallback(Ref* pSender) {
 }
 
 void StartMenu::menuItem1Callback(cocos2d::Ref* pSender) {
-  Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, GameScene::createScene()));
+  Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, TestScene::createScene()));
 }
 void StartMenu::menuItem2Callback(cocos2d::Ref* pSender) {
   Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, AboutScene::createScene()));

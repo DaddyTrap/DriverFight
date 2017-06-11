@@ -111,11 +111,29 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
   // load kick resource
   texture = director->getTextureCache()->addImage("animations/fighter_jump.png");
-  // kick animation
-  for (int i = 0; i < 12; ++i) {
+  // jump animation
+  for (int i = 0; i < 11; ++i) {
     frames.pushBack(SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(i * 300, 0, 300, 300))));
   }
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.04f), "fighter_jump");
+  frames.clear();
+
+  // load kick resource
+  texture = director->getTextureCache()->addImage("animations/fighter_stun.png");
+  // stun animation
+  for (int i = 0; i < 7; ++i) {
+    frames.pushBack(SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(i * 300, 0, 300, 300))));
+  }
+  anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.06f), "fighter_stun");
+  frames.clear();
+
+  // load kick resource
+  texture = director->getTextureCache()->addImage("animations/fighter_skill.png");
+  // skill animation
+  for (int i = 0; i < 8; ++i) {
+    frames.pushBack(SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(i * 300, 0, 300, 300))));
+  }
+  anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.06f), "fighter_skill");
   frames.clear();
 
   // run

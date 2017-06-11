@@ -131,10 +131,18 @@ void Fighter::update(float dt) {
     // 已着地，使其稳健着地并去掉垂直速度
     predict_pos.y = 0.0f;
     velocity.y = 0.0f;
-    if (state == JUMP)
-      resetState();
+    if (state == JUMP) {
+      if (left_holding || right_holding) {
+        setState(MOVE, -1.0f, true);
+      } else {
+        resetState();
+      }
+    }
   } else {
     setState(JUMP);
+  }
+  if (predict_pos.x <= 0 || predict_pos.x >= 800.0f) {
+    predict_pos.x = this->getPositionX();
   }
   this->setPosition(predict_pos); // 真正设置移动后位置
 
@@ -185,7 +193,11 @@ void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
   Skill::SkillEventArgs skill_args_to_trigger("", Skill::FINISHED);
   bool skill_flag = false;
   for (auto &i : skills) {
-    if (i->pressKey(key) && !skill_flag) {
+    auto flip_key = key;
+    if (!dir && (flip_key == BattleSystem::VirtualKey::LEFT || flip_key == BattleSystem::VirtualKey::RIGHT)) {
+      flip_key = flip_key == BattleSystem::VirtualKey::LEFT ? BattleSystem::VirtualKey::RIGHT : BattleSystem::VirtualKey::LEFT;
+    }
+    if (i->pressKey(flip_key) && !skill_flag) {
       skill_flag = true;
       skill_args_to_trigger = Skill::SkillEventArgs(i->name, Skill::FINISHED);
     }
@@ -198,7 +210,7 @@ void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
   switch (key) {
   case BattleSystem::UP:
     if (this->setState(JUMP)) {
-      this->velocity.y = 200.0f;
+      this->velocity.y = 800.0f;
     }
     break;
   case BattleSystem::DOWN:
@@ -314,6 +326,10 @@ void Fighter::triggerSkill(EventCustom *custom) {
 
 void Fighter::triggerSkill(Skill::SkillEventArgs args) {
   CCLOG("Skill: %s", args.name.c_str());
+  this->atk_type = SKILL;
+  if (this->setState(ATTACK)) {
+
+  }
 }
 
 bool Fighter::setState(Fighter::State next_state, float time, bool force) {
@@ -347,12 +363,16 @@ bool Fighter::setState(Fighter::State next_state, float time, bool force) {
       } else if (atk_type == KICK) {
         this->runAction(Sequence::create(Animate::create(attack_animations[1]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
       } else if (atk_type == SKILL) {
-        this->runAction(Sequence::create(Animate::create(attack_animations[2]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
+        this->runAction(Sequence::create(Animate::create(attack_animations[2]), DelayTime::create(0.2f), CallFunc::create([this]() {this->resetState(true); }), nullptr));
       }
       break;
     case JUMP:
       this->stopAllActions();
       this->runAction(Animate::create(jump_animation));
+      break;
+    case STUN:
+      this->stopAllActions();
+      this->runAction(Animate::create(stun_animation));
       break;
     default:
       break;
