@@ -3,7 +3,11 @@
 #include "AboutScene.h"
 using namespace CocosDenshion;
 USING_NS_CC;
+<<<<<<< HEAD
 using namespace std;
+=======
+
+>>>>>>> 58953d3ad949fe93eb0eab83edcbbffe9754480c
 static cocos2d::Size designResolutionSize = cocos2d::Size(800, 600);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
@@ -13,7 +17,12 @@ AppDelegate::AppDelegate() {
 
 }
 
+<<<<<<< HEAD
 AppDelegate::~AppDelegate() {}
+=======
+AppDelegate::~AppDelegate() {
+}
+>>>>>>> 58953d3ad949fe93eb0eab83edcbbffe9754480c
 
 //if you want a different context,just modify the value of glContextAttrs
 //it will takes effect on all platforms
@@ -64,15 +73,25 @@ bool AppDelegate::applicationDidFinishLaunching() {
   // if the frame's height is smaller than the height of medium size.
   else {
     director->setContentScaleFactor(MIN(smallResolutionSize.height / designResolutionSize.height, smallResolutionSize.width / designResolutionSize.width));
+<<<<<<< HEAD
   }
 
   register_all_packages();
 
   // create a scene. it's an autorelease object
+=======
+
+  }
+  register_all_packages();
+
+  // create a scene. it's an autorelease object
+
+>>>>>>> 58953d3ad949fe93eb0eab83edcbbffe9754480c
   auto sb = UserDefault::getInstance()->getStringForKey("first");
 
   if (sb == "")
     UserDefault::getInstance()->setStringForKey("first", "true");
+<<<<<<< HEAD
   auto scene = sb == "" ? AboutScene::createScene() :StartMenu::createScene();
 
   // load resources
@@ -131,6 +150,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.04f), "fighter_jump");
   frames.clear();
 
+=======
+  auto scene = sb == "" ? AboutScene::createScene() : StartMenu::createScene();
+>>>>>>> 58953d3ad949fe93eb0eab83edcbbffe9754480c
   // run
   director->runWithScene(scene);
 
