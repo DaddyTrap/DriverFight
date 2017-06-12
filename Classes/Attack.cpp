@@ -15,6 +15,7 @@ void Attack::setOwner(Fighter * owner) {
   this->owner = owner;
   //this->setPosition(owner->getPosition() + this->initial_pos);
   auto owner_bounding = owner->getDFBoundingBox();
+  auto owner_sp_box = owner->getBoundingBox();
   auto atk_sp_box = this->getBoundingBox();
 
   // DFBoundingBox size
@@ -35,7 +36,7 @@ void Attack::setOwner(Fighter * owner) {
     atk_bounding_offset.x += owner_bounding.size.width * new_initial.x;
     atk_bounding_offset.y += owner_bounding.size.height * new_initial.y;
   }
-  this->setPosition(Vec2(atk_bounding_offset.x - owner_bounding.size.width / 2 + atk_sp_box.size.width / 2, atk_bounding_offset.y - owner_bounding.size.height / 2 + atk_sp_box.size.height / 2));
+  this->setPosition(Vec2(owner_sp_box.getMidX() + atk_bounding_offset.x - owner_bounding.size.width / 2 + atk_sp_box.size.width / 2, owner_sp_box.getMidY() + atk_bounding_offset.y - owner_bounding.size.height / 2 + atk_sp_box.size.height / 2));
   this->DFBoudingBox.origin = owner_bounding.origin;
   this->DFBoudingBox.origin += atk_bounding_offset;
   this->real_width_scale = owner->dir ? -owner_bounding.size.width : owner_bounding.size.width;
@@ -63,14 +64,18 @@ void Attack::hit() {
 
 void Attack::update(float dt) {
   BaseSprite::update(dt);
+  CCLOG("%f, %f", getPositionX(), getPositionY());
+  if (!has_set_first_pos) {
+    first_pos = getPosition();
+    has_set_first_pos = true;
+  }
   if (is_destroy) return;
   if (total_dt > lifetime) {
     this->destroy();
     return;
   }
   total_dt += dt;
-  auto now_pos = getPosition();
-  auto delta_pos = routeFunc(dt);
+  auto delta_pos = routeFunc(total_dt);
   auto real_delta_pos = Vec2(delta_pos.x * real_width_scale, delta_pos.y * real_height_scale);
-  this->setPosition(now_pos + real_delta_pos);
+  this->setPosition(first_pos + real_delta_pos);
 }

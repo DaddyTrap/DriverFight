@@ -6,7 +6,7 @@ BattleSystem::BattleSystem() : fighters() {}
 BattleSystem::~BattleSystem() {}
 
 void BattleSystem::update(float dt) {
-  CCLOG("Fighter1 state: %d, Fighter2 state: %d", fighters[0] ? fighters[0]->getState() : -1, fighters[1] ? fighters[1]->getState() : -1);
+  CCLOG("Fighter1 state: %d, hp: %d; Fighter2 state: %d, hp: %d", fighters[0] ? fighters[0]->getState() : -1, fighters[0]->hp, fighters[1] ? fighters[1]->getState() : -1, fighters[1]->hp);
   // 搞定要删的和要加的Attack
   if (!todel_attacks.empty()) {
     for (auto &i : todel_attacks) {

@@ -1,0 +1,7 @@
+{
+  "damage": 70,
+  "lifetime": 5.0,
+  "stuntime": 0.3,
+  "initial_pos": [ -0.17, 0.49367 ],
+  "size":  [0.25317, 0.25317]
+}

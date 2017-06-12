@@ -37,6 +37,8 @@ public:
 private:
   Fighter *owner;
   float total_dt = 0.0f;
+  Vec2 first_pos;
+  bool has_set_first_pos = false;
 };
 
 #endif // !__ATTACK_H__

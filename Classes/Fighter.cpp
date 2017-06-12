@@ -2,6 +2,11 @@
 #include "SkillManager.h"
 #include "json/document.h"
 #include "Attack.h"
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
+
+static auto audio = SimpleAudioEngine::getInstance();
 
 const std::list<Fighter::State> Fighter::VALID_NEXT_STATE[8] = {
   { Fighter::State::JUMP, Fighter::State::ATTACK, Fighter::State::MOVE, Fighter::State::STUN, Fighter::State::SQUAT },    // IDLE
@@ -113,7 +118,7 @@ void Fighter::update(float dt) {
   }
 
   // 水平移动状态
-  if (state == MOVE || (state == JUMP && (left_holding || right_holding))) {
+  if (state == MOVE || ((state == JUMP) && (left_holding || right_holding))) {
     this->setDir(right_holding);
     velocity.x = dir ? speed : -speed;
   } else {
@@ -123,6 +128,15 @@ void Fighter::update(float dt) {
   // 垂直移动状态
   if (fabs(this->getPosition().y) > 0.01) { // 垂直运动未停止
     velocity.y -= G * dt;
+    /*static bool attack_has_set = false;
+    if (!attack_has_set) {
+      if (state == ATTACK) {
+        velocity.y = 0;
+        attack_has_set = true;
+      } else {
+        attack_has_set = false;
+      }
+    }*/
   }
   // 移动状态
   // 判断是否着地 (如需改变“地”高度，则改变BattleSystem的高度)
@@ -180,8 +194,10 @@ Attack * Fighter::spawnAttack(int damage, float lifetime, const std::string& fil
   return atk;
 }
 
-Attack * Fighter::spawnAttack(const AttackInfo &info) {
+Attack * Fighter::spawnAttack(const AttackInfo &info, const string &filepath) {
   auto atk = Attack::create();
+  if (filepath != "")
+    atk->initWithFile(filepath);
   atk->initWithAttackInfo(info);
   atk->setOwner(this);
   this->system->addAttack(atk);
@@ -211,6 +227,7 @@ void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
   case BattleSystem::UP:
     if (this->setState(JUMP)) {
       this->velocity.y = 800.0f;
+      audio->playEffect("sounds/jump.mp3");
     }
     break;
   case BattleSystem::DOWN:
@@ -231,12 +248,14 @@ void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
     this->atk_type = PUNCH;
     if (this->setState(ATTACK)) {
       this->spawnAttack(punch_info);
+      audio->playEffect("sounds/punch.mp3");
     }
     break;
   case BattleSystem::B:
     this->atk_type = KICK;
     if (this->setState(ATTACK)) {
       this->spawnAttack(kick_info);
+      audio->playEffect("sounds/kick.mp3");
     }
     break;
   case BattleSystem::C:
@@ -306,29 +325,31 @@ void Fighter::hitOtherCallback(EventCustom *custom) {
 
 void Fighter::hitByOtherCallback(BattleSystem::AttackHitEventArgs args) {
   auto stuntime = args.atk->stuntime;
-  this->setState(STUN, stuntime);
-  this->damage(args.atk);
+  if (this->setState(STUN, stuntime)) {
+    //SimpleAudioEngine::getInstance()->playEffect("sounds/hit.mp3");
+    this->damage(args.atk);
+  }
 }
 
 void Fighter::hitByOtherCallback(EventCustom *custom) {
-  auto args = static_cast<BattleSystem::AttackHitEventArgs*>(custom->getUserData());
+  /*auto args = static_cast<BattleSystem::AttackHitEventArgs*>(custom->getUserData());
   auto stuntime = args->atk->stuntime;
   this->setState(STUN, stuntime);
   this->damage(args->atk);
-  delete args;
+  delete args;*/
 }
 
 void Fighter::triggerSkill(EventCustom *custom) {
-  auto args = static_cast<Skill::SkillEventArgs*>(custom->getUserData());
+  //auto args = static_cast<Skill::SkillEventArgs*>(custom->getUserData());
 
-  delete args;
+  //delete args;
 }
 
 void Fighter::triggerSkill(Skill::SkillEventArgs args) {
   CCLOG("Skill: %s", args.name.c_str());
   this->atk_type = SKILL;
   if (this->setState(ATTACK)) {
-
+    this->spawnAttack(this->fireball_info, "attacks/fireball.png");
   }
 }
 
@@ -359,7 +380,10 @@ bool Fighter::setState(Fighter::State next_state, float time, bool force) {
     case ATTACK:
       this->stopAllActions();
       if (atk_type == PUNCH) {
-        this->runAction(Sequence::create(Animate::create(attack_animations[0]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
+        if (this->getPositionY() < 0.01f)
+          this->runAction(Sequence::create(Animate::create(attack_animations[0]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
+        else
+          this->runAction(Sequence::create(Animate::create(attack_animations[3]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
       } else if (atk_type == KICK) {
         this->runAction(Sequence::create(Animate::create(attack_animations[1]), CallFunc::create([this]() {this->resetState(true); }), nullptr));
       } else if (atk_type == SKILL) {

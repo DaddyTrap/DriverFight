@@ -1,6 +1,10 @@
 #include "AppDelegate.h"
 #include "StartMenu.h"
 #include "AboutScene.h"
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
+
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(800, 600);
@@ -74,6 +78,21 @@ bool AppDelegate::applicationDidFinishLaunching() {
     UserDefault::getInstance()->setStringForKey("first", "true");
   auto scene = sb == "" ? AboutScene::createScene() :StartMenu::createScene();
 
+
+  // load music resources
+  auto audio = SimpleAudioEngine::getInstance();
+  audio->preloadBackgroundMusic("sounds/bgm.mp3");
+  audio->preloadEffect("sounds/jump.mp3");
+  audio->preloadEffect("sounds/kick.wav");
+  audio->preloadEffect("sounds/punch.wav");
+  audio->preloadEffect("sounds/kick.mp3");
+  audio->preloadEffect("sounds/punch.mp3");
+  audio->preloadEffect("sounds/select_start.mp3");
+  audio->preloadEffect("sounds/switch.mp3");
+  audio->preloadEffect("sounds/deep_dark_fantasy.mp3");
+  audio->preloadEffect("sounds/hit.mp3");
+
+
   // load resources
   auto texture = director->getTextureCache()->addImage("animations/fighter_walk.png");
   auto anicache = AnimationCache::getInstance();
@@ -109,7 +128,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.03f), "fighter_kick");
   frames.clear();
 
-  // load kick resource
+  // load jump resource
   texture = director->getTextureCache()->addImage("animations/fighter_jump.png");
   // jump animation
   for (int i = 0; i < 11; ++i) {
@@ -118,7 +137,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.04f), "fighter_jump");
   frames.clear();
 
-  // load kick resource
+  // load stun resource
   texture = director->getTextureCache()->addImage("animations/fighter_stun.png");
   // stun animation
   for (int i = 0; i < 7; ++i) {
@@ -127,13 +146,22 @@ bool AppDelegate::applicationDidFinishLaunching() {
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.06f), "fighter_stun");
   frames.clear();
 
-  // load kick resource
+  // load skill resource
   texture = director->getTextureCache()->addImage("animations/fighter_skill.png");
   // skill animation
   for (int i = 0; i < 8; ++i) {
     frames.pushBack(SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(i * 300, 0, 300, 300))));
   }
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.06f), "fighter_skill");
+  frames.clear();
+
+  // load jump punch resource
+  texture = director->getTextureCache()->addImage("animations/fighter_jump_punch.png");
+  // jump punch animation
+  for (int i = 0; i < 6; ++i) {
+    frames.pushBack(SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(i * 300, 0, 300, 300))));
+  }
+  anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.06f), "fighter_jump_punch");
   frames.clear();
 
   // run

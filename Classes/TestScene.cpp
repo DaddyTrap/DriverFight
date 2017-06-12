@@ -3,6 +3,10 @@
 #include "Fighter.h"
 #include "Attack.h"
 
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
+
 USING_NS_CC;
 
 using std::string;
@@ -61,6 +65,11 @@ bool TestScene::init() {
   kick_info.routeFunc = [](float dt) {
     return Vec2(-3.2f * dt, 0);
   };
+  AttackInfo fireball_info = AttackInfo("attacks/ball.json");
+  fireball_info.routeFunc = [](float dt) {
+    if (dt < 0.5f) return Vec2(-1000.0f, -1000.0f);
+    return Vec2(-3.2f * (dt - 0.5f), 0);
+  };
 
   auto fighter = Fighter::create(1000, 1000);
   fighter->setSkills("skills/fighter_skill.json");
@@ -72,10 +81,12 @@ bool TestScene::init() {
   fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
   fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
   fighter->attack_animations[2] = AnimationCache::getInstance()->getAnimation("fighter_skill");
+  fighter->attack_animations[3] = AnimationCache::getInstance()->getAnimation("fighter_jump_punch");
   auto bounding = fighter->getBoundingBox();
   fighter->setDFBoundingBox(Rect(0, 0, 0.37975 * bounding.size.width, bounding.size.height));
   fighter->punch_info = punch_info;
   fighter->kick_info = kick_info;
+  fighter->fireball_info = fireball_info;
   battle_system->setFighter(fighter, 0);
   fighter->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
 
@@ -88,8 +99,12 @@ bool TestScene::init() {
   fighter->stun_animation = AnimationCache::getInstance()->getAnimation("fighter_stun");
   fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
   fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
+  fighter->attack_animations[2] = AnimationCache::getInstance()->getAnimation("fighter_skill");
+  fighter->attack_animations[3] = AnimationCache::getInstance()->getAnimation("fighter_jump_punch");
   bounding = fighter->getBoundingBox();
   fighter->setDFBoundingBox(Rect(0, 0, 0.37975 * bounding.size.width, bounding.size.height));
+  fighter->punch_info = punch_info;
+  fighter->kick_info = kick_info;
   battle_system->setFighter(fighter, 1);
   fighter->setPosition(Vec2(origin.x + visibleSize.width / 2 + 300.0f, origin.y + visibleSize.height / 2));
 
@@ -97,6 +112,8 @@ bool TestScene::init() {
   battle_system->setPositionY(100.0f + origin.y + 100.0f);
 
   this->addChild(battle_system);
+
+  SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/bgm.mp3", true);
 
   scheduleUpdate();
 

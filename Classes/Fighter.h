@@ -50,7 +50,7 @@ public:
   // std::shared_ptr<SkillManager> _skill_manager; // 技能管理
   bool flip = false;
   bool dir = true; // right is true, left is false
-  Animation *idle_animation, *move_animation, *jump_animation, *attack_animations[3], *stun_animation, *defence_animation;
+  Animation *idle_animation, *move_animation, *jump_animation, *attack_animations[8], *stun_animation, *defence_animation;
   AttackInfo punch_info, kick_info, fireball_info;
 
   static const std::list<State> VALID_NEXT_STATE[8];
@@ -70,7 +70,7 @@ public:
   void kick();
   void damage(Attack *source);
   Attack* spawnAttack(int damage, float lifetime, const std::string& filepath);
-  Attack* spawnAttack(const AttackInfo &info);
+  Attack* spawnAttack(const AttackInfo &info, const string &filepath = "");
   void pressKey(const BattleSystem::VirtualKey &key);
   void releaseKey(const BattleSystem::VirtualKey &key);
   bool resetState(bool force = false);
@@ -84,7 +84,7 @@ public:
 private:
   std::list<Skill*> skills;
   float state_time = -1;
-  float speed = 100.0f;
+  float speed = 150.0f;
   bool left_holding = false, right_holding = false;
   State state = IDLE;
   AttackType atk_type = PUNCH;
