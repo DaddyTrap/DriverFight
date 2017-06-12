@@ -88,3 +88,17 @@ void BattleSystem::releaseKey(EventKeyboard::KeyCode code) {
 void BattleSystem::bindButtonToFighter(const std::map<EventKeyboard::KeyCode, std::pair<int, VirtualKey>>& keymap) {
   this->keymap = keymap;
 }
+
+int BattleSystem::isGameOver() {
+  if (fighters[0]->hp <= 0 || fighters[1]->hp <= 0) {
+    if (fighters[0]->hp <= 0 && fighters[1]->hp <= 0) {
+      return -1;
+    }
+    if (fighters[0]->hp <= 0) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
+  return false;
+}

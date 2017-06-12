@@ -53,6 +53,8 @@ public:
   void releaseKey(EventKeyboard::KeyCode code);
   void bindButtonToFighter(const std::map<EventKeyboard::KeyCode, std::pair<int, VirtualKey>> &keymap);
 
+  /* 0 for not over, -1 for tie, 1 for fighters[0] 's win, 2 for fighters[1] 's win */
+  int isGameOver();
 private:
 };
 
