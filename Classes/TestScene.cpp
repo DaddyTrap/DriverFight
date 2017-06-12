@@ -2,7 +2,7 @@
 #include "SkillManager.h"
 #include "Fighter.h"
 #include "Attack.h"
-
+#include "StartMenu.h"
 #include "SimpleAudioEngine.h"
 
 using namespace CocosDenshion;
@@ -21,7 +21,7 @@ cocos2d::Scene * TestScene::createScene() {
 bool TestScene::init() {
   if (!Layer::init())
     return false;
-
+  end = false;
   visibleSize = Director::getInstance()->getVisibleSize();
   origin = Director::getInstance()->getVisibleOrigin();
 
@@ -70,6 +70,16 @@ bool TestScene::init() {
     if (dt < 0.5f) return Vec2(-1000.0f, -1000.0f);
     return Vec2(-3.2f * (dt - 0.5f), 0);
   };
+
+
+  // back To main
+  auto itemFont = Label::createWithTTF("Back", "fonts/LiheiPro.ttf", 30);
+  itemFont->setColor(Color3B::BLACK);
+  auto item = MenuItemLabel::create(itemFont, CC_CALLBACK_1(TestScene::BackCallback , this));
+  auto menu = Menu::create(item, NULL);
+  menu->setPosition(Vec2(visibleSize.width/ 2, visibleSize.height-50));
+  addChild(menu, 5);
+
 
   auto fighter = Fighter::create(1000, 1000);
   fighter->setSkills("skills/fighter_skill.json");
@@ -163,6 +173,10 @@ bool TestScene::init() {
   return true;
 }
 
+
+void TestScene::BackCallback(Ref* ps) {
+  Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, StartMenu::createScene()));
+}
 void TestScene::addListener() {
   // Keyboard
   auto listener = EventListenerKeyboard::create();
@@ -199,4 +213,26 @@ void TestScene::update(float dt) {
     hp2 = chp2;
     pT2->runAction(ProgressTo::create(0.5f, hp2 * 100 / battle_system->fighters[1]->max_hp));
   }
+  if (battle_system->isGameOver() && !end) {
+    end = true;
+    GameOver();
+  }
+}
+
+void TestScene::GameOver() {
+  unschedule(schedule_selector(TestScene::update));
+  _eventDispatcher->removeEventListenersForType(EventListener::Type::KEYBOARD);
+  auto audio = SimpleAudioEngine::getInstance();
+  audio->pauseBackgroundMusic();
+  audio->playEffect("sounds/deep_dark_fantasy.mp3", false);
+  Sprite* go = Sprite::create("gameOver.png");
+  go->setPosition(visibleSize / 2);
+  this->addChild(go, 3);
+  auto blackItem = MenuItem::create(CC_CALLBACK_1(TestScene::BackCallback, this));
+  blackItem->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+  blackItem->setContentSize(visibleSize);//设置大小为整个屏幕的大小
+  auto blackMenu = Menu::create(blackItem, NULL);
+  blackMenu->setPosition(Point::ZERO);
+  blackMenu->setAnchorPoint(Point::ZERO);
+  this->addChild(blackMenu, 100);
 }

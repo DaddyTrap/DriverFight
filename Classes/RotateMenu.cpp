@@ -1,4 +1,7 @@
 #include "RotateMenu.h"  
+#include "SimpleAudioEngine.h"
+
+using namespace CocosDenshion;
 #include <math.h>  
 #define PI acos(-1)  
 USING_NS_CC;
@@ -28,15 +31,18 @@ void RotateMenu::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
   switch (code) {
   case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
     setAngle(getAngle()+1.5f);
+    SimpleAudioEngine::getInstance()->playEffect("sounds/switch.mp3", false);
     rectify(1);
     updatePositionWithAnimation();
     break;
   case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
     setAngle(getAngle() - 1.5f);
+    SimpleAudioEngine::getInstance()->playEffect("sounds/switch.mp3", false);
     rectify(0);
     updatePositionWithAnimation();
     break;
   case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+    SimpleAudioEngine::getInstance()->playEffect("sounds/select_start.mp3", false);
     _selectedItem->activate();
     break;
   default:
