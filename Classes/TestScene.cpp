@@ -127,7 +127,7 @@ bool TestScene::init() {
   pT1->setScaleY(3.15f);
   pT1->setAnchorPoint(Vec2(0, 0));
   pT1->setType(ProgressTimerType::BAR);
-  pT1->setBarChangeRate(Point(.1f, 0));
+  pT1->setBarChangeRate(Point(1, 0));
   pT1->setMidpoint(Point(0, 1));
   pT1->setPercentage(100);
   pT1->setPosition(Vec2(70,visibleSize.height-54.5f));
@@ -145,7 +145,7 @@ bool TestScene::init() {
   pT2->setScaleY(3.15f);
   pT2->setAnchorPoint(Vec2(1, 0));
   pT2->setType(ProgressTimerType::BAR);
-  pT2->setBarChangeRate(Point(.1f, 0));
+  pT2->setBarChangeRate(Point(1, 0));
   pT2->setMidpoint(Point(1, 1));
   pT2->setPercentage(100);
   pT2->setPosition(Vec2(visibleSize.width-70+origin.x, visibleSize.height - 54.5f));
@@ -196,7 +196,7 @@ void TestScene::update(float dt) {
     CCProgressFromTo* to1 = CCProgressFromTo::create(0.1, from, to);
     pT1->runAction(to1);*/
     hp1 = chp1;
-    pT1->runAction(ProgressTo::create(0.5f, hp1 / battle_system->fighters[0]->max_hp));
+    pT1->runAction(ProgressTo::create(0.5f, hp1*100 / battle_system->fighters[0]->max_hp));
   }
   int chp2 = battle_system->fighters[1]->hp;
   if (chp2 != hp2) {
@@ -206,6 +206,6 @@ void TestScene::update(float dt) {
     hp2 = chp2;
     pT2->runAction(to1);*/
     hp2 = chp2;
-    pT2->runAction(ProgressTo::create(0.5f, hp2 / battle_system->fighters[1]->max_hp));
+    pT2->runAction(ProgressTo::create(0.5f, hp2*100 / battle_system->fighters[1]->max_hp));
   }
 }
