@@ -26,7 +26,7 @@ bool GuidanceScene::init() {
   Size visibleSize = Director::getInstance()->getVisibleSize();
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
   auto bg = Sprite::create("menubg.png");
-  bg->setScale(1.5);
+  bg->setScale(visibleSize.width / bg->getContentSize().width);
   bg->setPosition(visibleSize / 2);
   this->addChild(bg, 0);
 

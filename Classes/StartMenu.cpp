@@ -41,7 +41,7 @@ bool StartMenu::init() {
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
   auto bg = Sprite::create("menubg.png");
-  bg->setScale(1.3f);
+  bg->setScale(visibleSize.width / bg->getContentSize().width);
   bg->setPosition(visibleSize / 2);
   this->addChild(bg, 0);
   /////////////////////////////  
@@ -78,20 +78,6 @@ bool StartMenu::init() {
 
   /////////////////////////////  
   // 3. add your codes below...  
-
-
-  // add a label shows "Hello World"  
-  // create and initialize a label  
-
-  auto label = LabelTTF::create("Hello World", "Arial", 24);
-
-  // position the label on the center of the screen  
-  label->setPosition(Vec2(origin.x + visibleSize.width / 2,
-    origin.y + visibleSize.height - label->getContentSize().height));
-
-  // add the label as a child to this layer  
-  this->addChild(label, 1);
-
 
   auto audio = SimpleAudioEngine::getInstance();
   audio->playBackgroundMusic("sounds/bgm.mp3", true);

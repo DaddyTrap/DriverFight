@@ -44,8 +44,8 @@ public:
     SKILL
   };
 
-  int hp, max_hp;
-  int spc, max_spc;
+  float hp, max_hp;
+  float spc, max_spc;
   Vec2 velocity;
   // std::shared_ptr<SkillManager> _skill_manager; // 技能管理
   bool flip = false;
@@ -85,7 +85,7 @@ private:
   std::list<Skill*> skills;
   float state_time = -1;
   float speed = 150.0f;
-  bool left_holding = false, right_holding = false;
+  bool left_holding = false, right_holding = false, c_holding = false;
   State state = IDLE;
   AttackType atk_type = PUNCH;
 };

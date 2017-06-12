@@ -10,13 +10,13 @@ using namespace CocosDenshion;
 static auto audio = SimpleAudioEngine::getInstance();
 
 const std::list<Fighter::State> Fighter::VALID_NEXT_STATE[8] = {
-  { Fighter::State::JUMP, Fighter::State::ATTACK, Fighter::State::MOVE, Fighter::State::STUN, Fighter::State::SQUAT },    // IDLE
-  { Fighter::State::IDLE, /*Fighter::State::MOVE,*/ Fighter::State::JUMP2, Fighter::State::ATTACK, Fighter::State::STUN },    // JUMP
+  { Fighter::State::JUMP, Fighter::State::ATTACK, Fighter::State::MOVE, Fighter::State::STUN, Fighter::State::SQUAT, Fighter::State::DEFENCE },    // IDLE
+  { Fighter::State::IDLE, /*Fighter::State::MOVE,*/ Fighter::State::JUMP2, Fighter::State::ATTACK, Fighter::State::STUN, Fighter::State::DEFENCE },    // JUMP
   { Fighter::State::IDLE, Fighter::State::ATTACK },                                                 // JUMP2
   { /*Fighter::State::IDLE,*/ Fighter::State::STUN },                                                   // ATTACK
-  { Fighter::State::IDLE, Fighter::State::JUMP, Fighter::State::DEFENCE, Fighter::State::STUN, Fighter::State::ATTACK },  // MOVE
+  { Fighter::State::IDLE, Fighter::State::JUMP, Fighter::State::DEFENCE, Fighter::State::STUN, Fighter::State::ATTACK, Fighter::State::DEFENCE },  // MOVE
   { Fighter::State::IDLE, Fighter::State::JUMP },                                                                         // STUN
-  { Fighter::State::IDLE, Fighter::State::MOVE },                                                   // DEFENCE
+  { Fighter::State::IDLE, Fighter::State::MOVE, Fighter::State::DEFENCE },                                                   // DEFENCE
   { Fighter::State::IDLE, Fighter::State::STUN, Fighter::State::ATTACK }                            // SQUAT
 };
 
@@ -72,6 +72,7 @@ void Fighter::setSkills(const std::list<Skill*> &skills) {
     i->setOwner(this);
   }
 }
+
 /*
 出招表Json格式
   [{
@@ -129,15 +130,6 @@ void Fighter::update(float dt) {
   // 垂直移动状态
   if (fabs(this->getPosition().y) > 0.01) { // 垂直运动未停止
     velocity.y -= G * dt;
-    /*static bool attack_has_set = false;
-    if (!attack_has_set) {
-      if (state == ATTACK) {
-        velocity.y = 0;
-        attack_has_set = true;
-      } else {
-        attack_has_set = false;
-      }
-    }*/
   }
   // 移动状态
   // 判断是否着地 (如需改变“地”高度，则改变BattleSystem的高度)
@@ -173,7 +165,7 @@ void Fighter::punch() {}
 void Fighter::kick() {}
 
 void Fighter::damage(Attack * source) {
-  this->hp -= source->damage;
+  this->hp -= state == DEFENCE ? source->damage * 0.1f : source->damage;
 }
 
 Attack * Fighter::spawnAttack(int damage, float lifetime, const std::string& filepath) {
@@ -184,12 +176,6 @@ Attack * Fighter::spawnAttack(int damage, float lifetime, const std::string& fil
   atk->stuntime = 2.0f;
   // set bounding
   atk->setDFBoundingBox(atk->getBoundingBox());
-  /*auto offset = Vec2(this->getBoundingBox().size.width / 2 + atk->getBoundingBox().size.width / 2, 0);
-  if (dir) {
-    atk->setPosition(this->getPosition() + offset);
-  } else {
-    atk->setPosition(this->getPosition() - offset);
-  }*/
   atk->setOwner(this);
   this->system->addAttack(atk);
   return atk;
@@ -260,6 +246,10 @@ void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
     }
     break;
   case BattleSystem::C:
+    c_holding = true;
+    if (this->setState(DEFENCE)) {
+      
+    }
     break;
   default:
     break;
@@ -297,6 +287,8 @@ void Fighter::releaseKey(const BattleSystem::VirtualKey & key) {
   case BattleSystem::B:
     break;
   case BattleSystem::C:
+    c_holding = false;
+    resetState();
     break;
   default:
     break;
@@ -325,10 +317,11 @@ void Fighter::hitOtherCallback(EventCustom *custom) {
 }
 
 void Fighter::hitByOtherCallback(BattleSystem::AttackHitEventArgs args) {
+  this->damage(args.atk);
+  if (state == DEFENCE) return;
   auto stuntime = args.atk->stuntime;
   if (this->setState(STUN, stuntime)) {
     //SimpleAudioEngine::getInstance()->playEffect("sounds/hit.mp3");
-    this->damage(args.atk);
   }
 }
 
@@ -399,6 +392,9 @@ bool Fighter::setState(Fighter::State next_state, float time, bool force) {
       this->stopAllActions();
       this->runAction(Animate::create(stun_animation));
       break;
+    case DEFENCE:
+      this->stopAllActions();
+      this->runAction(Animate::create(defence_animation));
     default:
       break;
     }

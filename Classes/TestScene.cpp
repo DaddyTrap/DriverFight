@@ -78,12 +78,13 @@ bool TestScene::init() {
   fighter->move_animation = AnimationCache::getInstance()->getAnimation("fighter_move");
   fighter->jump_animation = AnimationCache::getInstance()->getAnimation("fighter_jump");
   fighter->stun_animation = AnimationCache::getInstance()->getAnimation("fighter_stun");
+  fighter->defence_animation = AnimationCache::getInstance()->getAnimation("fighter_defence");
   fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
   fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
   fighter->attack_animations[2] = AnimationCache::getInstance()->getAnimation("fighter_skill");
   fighter->attack_animations[3] = AnimationCache::getInstance()->getAnimation("fighter_jump_punch");
   auto bounding = fighter->getBoundingBox();
-  fighter->setDFBoundingBox(Rect(0, 0, 0.37975 * bounding.size.width, bounding.size.height));
+  fighter->setDFBoundingBox(Rect(-0.37975 * bounding.size.width / 2, 0, 0.37975 * bounding.size.width, bounding.size.height));
   fighter->punch_info = punch_info;
   fighter->kick_info = kick_info;
   fighter->fireball_info = fireball_info;
@@ -97,12 +98,13 @@ bool TestScene::init() {
   fighter->move_animation = AnimationCache::getInstance()->getAnimation("fighter_move");
   fighter->jump_animation = AnimationCache::getInstance()->getAnimation("fighter_jump");
   fighter->stun_animation = AnimationCache::getInstance()->getAnimation("fighter_stun");
+  fighter->defence_animation = AnimationCache::getInstance()->getAnimation("fighter_defence");
   fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
   fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
   fighter->attack_animations[2] = AnimationCache::getInstance()->getAnimation("fighter_skill");
   fighter->attack_animations[3] = AnimationCache::getInstance()->getAnimation("fighter_jump_punch");
   bounding = fighter->getBoundingBox();
-  fighter->setDFBoundingBox(Rect(0, 0, 0.37975 * bounding.size.width, bounding.size.height));
+  fighter->setDFBoundingBox(Rect(-0.37975 * bounding.size.width / 2, 0, 0.37975 * bounding.size.width, bounding.size.height));
   fighter->punch_info = punch_info;
   fighter->kick_info = kick_info;
   fighter->fireball_info = fireball_info;
@@ -116,11 +118,11 @@ bool TestScene::init() {
 
   SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/bgm.mp3", true);
 
-  // HP Set Hp
+  // Set Hp
   hp1 = battle_system->fighters[0]->hp;
   hp2 = battle_system->fighters[1]->hp;
-  Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 0,950,200)));
-  Sprite* sp = Sprite::create("hp_tick.png", CC_RECT_PIXELS_TO_POINTS(Rect(0,0,10,10)));
+  Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 950, 200)));
+  Sprite* sp = Sprite::create("hp_tick.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 10, 10)));
 
   pT1 = ProgressTimer::create(sp);
   pT1->setScaleX(29.0f);
@@ -130,10 +132,10 @@ bool TestScene::init() {
   pT1->setBarChangeRate(Point(1, 0));
   pT1->setMidpoint(Point(0, 1));
   pT1->setPercentage(100);
-  pT1->setPosition(Vec2(70,visibleSize.height-54.5f));
+  pT1->setPosition(Vec2(70, visibleSize.height - 54.5f));
   addChild(pT1, 2);
   sp0->setAnchorPoint(Vec2(0, 1));
-  sp0->setPosition(Vec2(0,visibleSize.height));
+  sp0->setPosition(Vec2(0, visibleSize.height));
   sp0->setScale(0.5f);
   addChild(sp0, 1);
 
@@ -148,7 +150,7 @@ bool TestScene::init() {
   pT2->setBarChangeRate(Point(1, 0));
   pT2->setMidpoint(Point(1, 1));
   pT2->setPercentage(100);
-  pT2->setPosition(Vec2(visibleSize.width-70+origin.x, visibleSize.height - 54.5f));
+  pT2->setPosition(Vec2(visibleSize.width - 70 + origin.x, visibleSize.height - 54.5f));
   addChild(pT2, 2);
   sp1->setFlipX(true);
   sp1->setAnchorPoint(Vec2(1, 1));
@@ -186,26 +188,15 @@ void TestScene::onKeyReleased(EventKeyboard::KeyCode code, Event * ev) {
 }
 
 void TestScene::update(float dt) {
-  // skill_manager->update(dt);
   battle_system->update(dt);
-  int chp1 = battle_system->fighters[0]->hp;
+  float chp1 = battle_system->fighters[0]->hp;
   if (chp1 != hp1) {
-    /*float from = pT1->getPercentage();
-    float to = pT1->getPercentage() - ((hp1-chp1)/battle_system->fighters[0]->max_hp);
     hp1 = chp1;
-    CCProgressFromTo* to1 = CCProgressFromTo::create(0.1, from, to);
-    pT1->runAction(to1);*/
-    hp1 = chp1;
-    pT1->runAction(ProgressTo::create(0.5f, hp1*100 / battle_system->fighters[0]->max_hp));
+    pT1->runAction(ProgressTo::create(0.5f, hp1 * 100 / battle_system->fighters[0]->max_hp));
   }
-  int chp2 = battle_system->fighters[1]->hp;
+  float chp2 = battle_system->fighters[1]->hp;
   if (chp2 != hp2) {
-    /*float from = pT2->getPercentage();
-    float to = pT2->getPercentage() - ((hp2 - chp2) / battle_system->fighters[1]->max_hp);
-    CCProgressFromTo* to1 = CCProgressFromTo::create(0.1, from, to);
     hp2 = chp2;
-    pT2->runAction(to1);*/
-    hp2 = chp2;
-    pT2->runAction(ProgressTo::create(0.5f, hp2*100 / battle_system->fighters[1]->max_hp));
+    pT2->runAction(ProgressTo::create(0.5f, hp2 * 100 / battle_system->fighters[1]->max_hp));
   }
 }

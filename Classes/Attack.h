@@ -34,6 +34,7 @@ public:
   void hit();
 
   void update(float dt) override;
+  void nextPos(float dt);
 private:
   Fighter *owner;
   float total_dt = 0.0f;

@@ -33,14 +33,21 @@ void Attack::setOwner(Fighter * owner) {
     } else {
       new_initial.x -= (initial_pos.x - 0.5f) * 2 + this->size.x;
     }
-    atk_bounding_offset.x += owner_bounding.size.width * new_initial.x;
-    atk_bounding_offset.y += owner_bounding.size.height * new_initial.y;
+    atk_bounding_offset.x = owner_bounding.size.width * new_initial.x;
+    atk_bounding_offset.y = owner_bounding.size.height * new_initial.y;
   }
-  this->setPosition(Vec2(owner_sp_box.getMidX() + atk_bounding_offset.x - owner_bounding.size.width / 2 + atk_sp_box.size.width / 2, owner_sp_box.getMidY() + atk_bounding_offset.y - owner_bounding.size.height / 2 + atk_sp_box.size.height / 2));
-  this->DFBoudingBox.origin = owner_bounding.origin;
-  this->DFBoudingBox.origin += atk_bounding_offset;
+  //this->setPosition(Vec2(owner_sp_box.getMidX() + atk_bounding_offset.x - owner_bounding.size.width / 2 + atk_sp_box.size.width / 2, owner_sp_box.getMidY() + atk_bounding_offset.y - owner_bounding.size.height / 2 + atk_sp_box.size.height / 2));
+  auto predict_dfbounding = this->DFBoudingBox;
+  predict_dfbounding.origin = owner_bounding.origin;
+  predict_dfbounding.origin += atk_bounding_offset;
+  this->setPosition(Vec2(predict_dfbounding.getMidX() , owner_sp_box.getMidY() + atk_bounding_offset.y - owner_bounding.size.height / 2 + atk_sp_box.size.height / 2));
+  /*this->DFBoudingBox.origin = owner_bounding.origin;
+  this->DFBoudingBox.origin += atk_bounding_offset;*/
+  this->DFBoudingBox = predict_dfbounding;
   this->real_width_scale = owner->dir ? -owner_bounding.size.width : owner_bounding.size.width;
   this->real_height_scale = owner_bounding.size.height;
+
+  this->nextPos(0.0f);
 }
 
 void Attack::initWithAttackInfo(const AttackInfo & info) {
@@ -65,14 +72,18 @@ void Attack::hit() {
 void Attack::update(float dt) {
   BaseSprite::update(dt);
   CCLOG("%f, %f", getPositionX(), getPositionY());
-  if (!has_set_first_pos) {
-    first_pos = getPosition();
-    has_set_first_pos = true;
-  }
   if (is_destroy) return;
   if (total_dt > lifetime) {
     this->destroy();
     return;
+  }
+  nextPos(dt);
+}
+
+void Attack::nextPos(float dt) {
+  if (!has_set_first_pos) {
+    first_pos = getPosition();
+    has_set_first_pos = true;
   }
   total_dt += dt;
   auto delta_pos = routeFunc(total_dt);

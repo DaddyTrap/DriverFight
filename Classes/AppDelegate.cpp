@@ -169,6 +169,15 @@ bool AppDelegate::applicationDidFinishLaunching() {
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.06f), "fighter_jump_punch");
   frames.clear();
 
+  // load defence resource
+  texture = director->getTextureCache()->addImage("animations/fighter_defence.png");
+  // defence animation
+  for (int i = 0; i < 3; ++i) {
+    frames.pushBack(SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(i * 300, 0, 300, 300))));
+  }
+  anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.04f), "fighter_defence");
+  frames.clear();
+
   // run
   director->runWithScene(scene);
 
