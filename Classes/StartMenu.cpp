@@ -2,6 +2,8 @@
 #include "RotateMenu.h"  
 #include "TestScene.h"
 #include "AboutScene.h"
+#include "GuidanceScene.h"
+#include "TestScene.h"
 USING_NS_CC;
 typedef struct SceneList {
   const char *name;
@@ -38,6 +40,10 @@ bool StartMenu::init() {
   Size visibleSize = Director::getInstance()->getVisibleSize();
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+  auto bg = Sprite::create("menubg.png");
+  bg->setScale(1.3f);
+  bg->setPosition(visibleSize / 2);
+  this->addChild(bg, 0);
   /////////////////////////////  
   // 2. add a menu item with "X" image, which is clicked to quit the program  
   //    you may modify it.  
@@ -58,13 +64,13 @@ bool StartMenu::init() {
   auto item1 = MenuItemImage::create("start.jpg", "start.jpg", CC_CALLBACK_1(StartMenu::menuItem1Callback, this));
   auto item2 = MenuItemImage::create("about.jpg", "about.jpg", CC_CALLBACK_1(StartMenu::menuItem2Callback, this));
   auto item3 = MenuItemImage::create("end.jpg", "end.jpg", CC_CALLBACK_1(StartMenu::menuItem3Callback, this));
-
+  auto item4 = MenuItemImage::create("end.jpg", "end.jpg", CC_CALLBACK_1(StartMenu::menuItem4Callback, this));
   RotateMenu *menu = RotateMenu::create();
 
   menu->addMenuItem(item1);
   menu->addMenuItem(item2);
   menu->addMenuItem(item3);
-
+  menu->addMenuItem(item4);
   menu->setPosition(visibleSize / 2);
   this->addChild(menu, 2);
 
@@ -87,7 +93,8 @@ bool StartMenu::init() {
   this->addChild(label, 1);
 
 
-
+  auto audio = SimpleAudioEngine::getInstance();
+  audio->playBackgroundMusic("sounds/bgm.mp3", true);
 
   return true;
 }
@@ -116,4 +123,6 @@ void StartMenu::menuItem3Callback(cocos2d::Ref* pSender) {
   Director::getInstance()->end();
 }
 
-
+void StartMenu::menuItem4Callback(cocos2d::Ref* pSender) {
+  Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, GuidanceScene::createScene()));
+}

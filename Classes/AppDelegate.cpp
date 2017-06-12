@@ -6,7 +6,7 @@
 using namespace CocosDenshion;
 
 USING_NS_CC;
-
+using namespace std;
 static cocos2d::Size designResolutionSize = cocos2d::Size(800, 600);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
@@ -16,7 +16,10 @@ AppDelegate::AppDelegate() {
 
 }
 
-AppDelegate::~AppDelegate() {}
+
+AppDelegate::~AppDelegate() {
+}
+
 
 //if you want a different context,just modify the value of glContextAttrs
 //it will takes effect on all platforms
@@ -68,14 +71,16 @@ bool AppDelegate::applicationDidFinishLaunching() {
   else {
     director->setContentScaleFactor(MIN(smallResolutionSize.height / designResolutionSize.height, smallResolutionSize.width / designResolutionSize.width));
   }
-
   register_all_packages();
 
   // create a scene. it's an autorelease object
+
+
   auto sb = UserDefault::getInstance()->getStringForKey("first");
 
   if (sb == "")
     UserDefault::getInstance()->setStringForKey("first", "true");
+
   auto scene = sb == "" ? AboutScene::createScene() :StartMenu::createScene();
 
 

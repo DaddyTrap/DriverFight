@@ -57,14 +57,14 @@
     <ClCompile Include="..\Classes\TestScene.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\RotateMenu.cpp">
       <Filter>src\Util</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\StartMenu.cpp">
-      <Filter>src\Util</Filter>
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GuidanceScene.cpp">
+      <Filter>src\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,14 +107,14 @@
     <ClInclude Include="..\Classes\TestScene.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>src\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\RotateMenu.h">
       <Filter>src\Util</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\StartMenu.h">
-      <Filter>src\Util</Filter>
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GuidanceScene.h">
+      <Filter>src\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

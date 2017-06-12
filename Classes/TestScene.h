@@ -18,10 +18,10 @@ public:
 private:
   Size visibleSize;
   Vec2 origin;
-
+  ProgressTimer* pT1, *pT2;
   SkillManager *skill_manager;
   BattleSystem *battle_system;
-
+  float hp1, hp2;
   void addListener();
   void onKeyPressed(EventKeyboard::KeyCode code, Event *ev);
   void onKeyReleased(EventKeyboard::KeyCode code, Event *ev);

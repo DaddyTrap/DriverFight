@@ -2,7 +2,8 @@
 #define __StartMenu_SCENE_H__
 
 #include "cocos2d.h"
-
+#include "SimpleAudioEngine.h"
+using namespace CocosDenshion;
 class StartMenu : public cocos2d::Layer {
 public:
   // there's no 'id' in cpp, so we recommend returning the class instance pointer  
@@ -15,8 +16,6 @@ public:
   void menuItem2Callback(cocos2d::Ref* pSender);
   void menuItem3Callback(cocos2d::Ref* pSender);
   void menuItem4Callback(cocos2d::Ref* pSender);
-  void menuItem5Callback(cocos2d::Ref* pSender);
-
   // implement the "static create()" method manually  
   CREATE_FUNC(StartMenu);
 };
