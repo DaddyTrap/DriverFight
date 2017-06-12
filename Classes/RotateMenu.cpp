@@ -16,9 +16,33 @@ bool RotateMenu::init() {
   listener->onTouchMoved = CC_CALLBACK_2(RotateMenu::onTouchMoved, this);
   listener->onTouchEnded = CC_CALLBACK_2(RotateMenu::onTouchEnded, this);
   getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+  auto keyboardListener = EventListenerKeyboard::create();
+  keyboardListener->onKeyPressed = CC_CALLBACK_2(RotateMenu::onKeyPressed, this);
+  keyboardListener->onKeyReleased = CC_CALLBACK_2(RotateMenu::onKeyReleased, this);
+  _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
   return true;
 };
 
+
+void RotateMenu::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
+  switch (code) {
+  case cocos2d::EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+    setAngle(getAngle()+1.5f);
+    rectify(1);
+    updatePositionWithAnimation();
+    break;
+  case cocos2d::EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+    setAngle(getAngle() - 1.5f);
+    rectify(0);
+    updatePositionWithAnimation();
+    break;
+  case cocos2d::EventKeyboard::KeyCode::KEY_ENTER:
+    _selectedItem->activate();
+    break;
+  default:
+    break;
+  }
+}
 void RotateMenu::addMenuItem(cocos2d::MenuItem *item) {
   item->setPosition(this->getContentSize() / 2);
   this->addChild(item);

@@ -2,7 +2,8 @@
 #include "SkillManager.h"
 #include "json/document.h"
 #include "Attack.h"
-
+#include "SimpleAudioEngine.h"
+using namespace CocosDenshion;
 const std::list<Fighter::State> Fighter::VALID_NEXT_STATE[8] = {
   { Fighter::State::JUMP, Fighter::State::ATTACK, Fighter::State::MOVE, Fighter::State::STUN, Fighter::State::SQUAT },    // IDLE
   { Fighter::State::IDLE, /*Fighter::State::MOVE,*/ Fighter::State::JUMP2, Fighter::State::ATTACK, Fighter::State::STUN },    // JUMP
@@ -199,6 +200,7 @@ void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
   case BattleSystem::UP:
     if (this->setState(JUMP)) {
       this->velocity.y = 200.0f;
+      SimpleAudioEngine::getInstance()->playEffect("sounds/maryjump.mp3", false);
     }
     break;
   case BattleSystem::DOWN:
@@ -219,12 +221,14 @@ void Fighter::pressKey(const BattleSystem::VirtualKey & key) {
     this->atk_type = PUNCH;
     if (this->setState(ATTACK)) {
       this->spawnAttack(punch_info);
+      SimpleAudioEngine::getInstance()->playEffect("sounds/attack.wav", false);
     }
     break;
   case BattleSystem::B:
     this->atk_type = KICK;
     if (this->setState(ATTACK)) {
       this->spawnAttack(kick_info);
+      SimpleAudioEngine::getInstance()->playEffect("sounds/hit.mp3", false);
     }
     break;
   case BattleSystem::C:

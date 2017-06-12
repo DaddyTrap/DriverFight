@@ -1,4 +1,4 @@
-#include "TestScene.h"
+﻿#include "TestScene.h"
 #include "SkillManager.h"
 #include "Fighter.h"
 #include "Attack.h"
@@ -86,6 +86,46 @@ bool TestScene::init() {
 
   this->addChild(battle_system);
 
+  // Set Hp
+  hp1 = battle_system->fighters[0]->hp;
+  hp2 = battle_system->fighters[1]->hp;
+  Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 0,950,200)));
+  Sprite* sp = Sprite::create("hp_tick.png", CC_RECT_PIXELS_TO_POINTS(Rect(0,0,10,10)));
+
+  pT1 = ProgressTimer::create(sp);
+  pT1->setScaleX(29.0f);
+  pT1->setScaleY(3.15f);
+  pT1->setAnchorPoint(Vec2(0, 0));
+  pT1->setType(ProgressTimerType::BAR);
+  pT1->setBarChangeRate(Point(1, 0));
+  pT1->setMidpoint(Point(0, 1));
+  pT1->setPercentage(100);
+  pT1->setPosition(Vec2(70,visibleSize.height-54.5f));
+  addChild(pT1, 2);
+  sp0->setAnchorPoint(Vec2(0, 1));
+  sp0->setPosition(Vec2(0,visibleSize.height));
+  sp0->setScale(0.5f);
+  addChild(sp0, 1);
+
+  Sprite* sp1 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 950, 200)));
+  Sprite* sp2 = Sprite::create("hp_tick.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 10, 10)));
+
+  pT2 = ProgressTimer::create(sp2);
+  pT2->setScaleX(29.0f);
+  pT2->setScaleY(3.15f);
+  pT2->setAnchorPoint(Vec2(1, 0));
+  pT2->setType(ProgressTimerType::BAR);
+  pT2->setBarChangeRate(Point(0, 1));
+  pT2->setMidpoint(Point(0, 1));
+  pT2->setPercentage(100);
+  pT2->setPosition(Vec2(visibleSize.width-70+origin.x, visibleSize.height - 54.5f));
+  addChild(pT2, 2);
+  sp1->setFlipX(true);
+  sp1->setAnchorPoint(Vec2(1, 1));
+  sp1->setPosition(Vec2(visibleSize.width, visibleSize.height));
+  sp1->setScale(0.5f);
+  addChild(sp1, 1);
+
   scheduleUpdate();
 
   return true;
@@ -118,4 +158,20 @@ void TestScene::onKeyReleased(EventKeyboard::KeyCode code, Event * ev) {
 void TestScene::update(float dt) {
   // skill_manager->update(dt);
   battle_system->update(dt);
+  int chp1 = battle_system->fighters[0]->hp;
+  if (chp1 != hp1) {
+    float from = pT1->getPercentage();
+    float to = pT1->getPercentage() - (hp1-chp1);
+    hp1 = chp1;
+    CCProgressFromTo* to1 = CCProgressFromTo::create(0.1, from, to);
+    pT1->runAction(to1);
+  }
+  int chp2 = battle_system->fighters[1]->hp;
+  if (chp2 != hp2) {
+    float from = pT2->getPercentage();
+    float to = pT2->getPercentage() - (hp2 - chp2);
+    CCProgressFromTo* to1 = CCProgressFromTo::create(0.1, from, to);
+    hp2 = chp2;
+    pT2->runAction(to1);
+  }
 }

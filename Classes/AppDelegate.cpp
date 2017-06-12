@@ -1,8 +1,9 @@
 #include "AppDelegate.h"
 #include "StartMenu.h"
 #include "AboutScene.h"
+using namespace CocosDenshion;
 USING_NS_CC;
-
+using namespace std;
 static cocos2d::Size designResolutionSize = cocos2d::Size(800, 600);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
@@ -109,6 +110,18 @@ bool AppDelegate::applicationDidFinishLaunching() {
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.03f), "fighter_kick");
   frames.clear();
 
+
+  // load music resource
+  auto audio = SimpleAudioEngine::getInstance();
+  audio->preloadBackgroundMusic("sounds/bgm.mp3");
+  audio->preloadEffect("sounds/attack.mp3");
+  audio->preloadEffect("sounds/attack.wav");
+  audio->preloadEffect("sounds/Damage3.ogg");
+  audio->preloadEffect("sounds/defence.mp3");
+  audio->preloadEffect("sounds/Fire1.ogg");
+  audio->preloadEffect("sounds/hit.mp3");
+  audio->preloadEffect("sounds/hit.wav");
+  audio->preloadEffect("sounds/maryjump.mp3");
   // load kick resource
   texture = director->getTextureCache()->addImage("animations/fighter_jump.png");
   // kick animation

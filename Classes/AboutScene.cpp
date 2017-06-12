@@ -25,6 +25,10 @@ bool AboutScene::init() {
   
   Size visibleSize = Director::getInstance()->getVisibleSize();
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
+  auto bg = Sprite::create("menubg.png");
+  bg->setScale(1.5);
+  bg->setPosition(visibleSize / 2);
+  this->addChild(bg, 0);
   CCSize size = CCDirector::sharedDirector()->getVisibleSize();
   auto blackItem = MenuItem::create(CC_CALLBACK_1(AboutScene::BackCallback, this));
   blackItem->setPosition(visibleSize.width / 2, visibleSize.height / 2);
@@ -34,13 +38,15 @@ bool AboutScene::init() {
   blackMenu->setAnchorPoint(Point::ZERO);
   this->addChild(blackMenu, 100);
   //创建要显示的文字  
-  text = CCLabelTTF::create("Driver Fight\nCreated by +C,zh,wh\nIt's a Game just for fun\nIt's Not about technology.\nit's about philosophy!\nFor player1, WASD->move, J->hand, K->leg\nFor player2, Arrows->move, 1->hand, 2->leg\n", "", 30);
+
+  text = Label::createWithTTF("Driver Fight\nCreated by +C,zh,wh\nIt's a Game just for fun\nIt's Not about technology.\nit's about philosophy!\n", "fonts/LiheiPro.ttf", 30);
+  text->setColor(Color3B::BLACK);
   text->setPosition(ccp(400, -120));
 
   //绘制裁剪区域  
   CCDrawNode* shap = CCDrawNode::create();
-  CCPoint point[4] = { ccp(0,0), ccp(800, 0), ccp(800, 500), ccp(0, 500) };
-  shap->drawPolygon(point, 4, ccc4f(355, 255, 255, 255), 2, ccc4f(255, 255, 255, 255));
+  CCPoint point[4] = { ccp(0,0), ccp(800, 0), ccp(800, 600), ccp(0, 600) };
+  shap->drawPolygon(point, 4, ccc4f(255, 255, 255, 255), 2, ccc4f(255, 255, 255, 255));
   CCClippingNode* cliper = CCClippingNode::create();
   cliper->setStencil(shap);
   cliper->setAnchorPoint(ccp(.5, .5));
@@ -56,7 +62,7 @@ bool AboutScene::init() {
 }
 
 void AboutScene::rollText(float) {
-  text->getPositionY() > 600 ? text->setPositionY(-150) : text->setPositionY(text->getPositionY() + 2);
+  text->getPositionY() > 700 ? text->setPositionY(-150) : text->setPositionY(text->getPositionY() + 2);
 }
 void AboutScene::BackCallback(Ref* ps) {
   Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, StartMenu::createScene()));

@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 class AboutScene : public cocos2d::Layer {
 public:
-  cocos2d::LabelTTF* text;
+  cocos2d::Label* text;
   static cocos2d::Scene* createScene();
   void BackCallback(Ref* ps);
   virtual bool init();

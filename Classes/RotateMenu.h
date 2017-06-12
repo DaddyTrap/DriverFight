@@ -4,6 +4,7 @@
 /*
 *模仿乱斗西游主界面的旋转菜单
 */
+USING_NS_CC;
 class RotateMenu :public cocos2d::Layer {
 public:
   //构造方法  
@@ -43,6 +44,8 @@ private:
   virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
   virtual void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
   virtual void onTouchMoved(cocos2d::Touch* touch, cocos2d::Event* event);
+  void onKeyPressed(EventKeyboard::KeyCode code, Event* event);
+  void onKeyReleased(EventKeyboard::KeyCode code, Event* event) {}
   //动画完结调用函数  
   void actionEndCallBack(float dx);
   //当前被选择的item  
