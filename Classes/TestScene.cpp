@@ -105,6 +105,7 @@ bool TestScene::init() {
   fighter->setDFBoundingBox(Rect(0, 0, 0.37975 * bounding.size.width, bounding.size.height));
   fighter->punch_info = punch_info;
   fighter->kick_info = kick_info;
+  fighter->fireball_info = fireball_info;
   battle_system->setFighter(fighter, 1);
   fighter->setPosition(Vec2(origin.x + visibleSize.width / 2 + 300.0f, origin.y + visibleSize.height / 2));
 
@@ -189,18 +190,22 @@ void TestScene::update(float dt) {
   battle_system->update(dt);
   int chp1 = battle_system->fighters[0]->hp;
   if (chp1 != hp1) {
-    float from = pT1->getPercentage();
+    /*float from = pT1->getPercentage();
     float to = pT1->getPercentage() - ((hp1-chp1)/battle_system->fighters[0]->max_hp);
     hp1 = chp1;
     CCProgressFromTo* to1 = CCProgressFromTo::create(0.1, from, to);
-    pT1->runAction(to1);
+    pT1->runAction(to1);*/
+    hp1 = chp1;
+    pT1->runAction(ProgressTo::create(0.5f, hp1 / battle_system->fighters[0]->max_hp));
   }
   int chp2 = battle_system->fighters[1]->hp;
   if (chp2 != hp2) {
-    float from = pT2->getPercentage();
+    /*float from = pT2->getPercentage();
     float to = pT2->getPercentage() - ((hp2 - chp2) / battle_system->fighters[1]->max_hp);
     CCProgressFromTo* to1 = CCProgressFromTo::create(0.1, from, to);
     hp2 = chp2;
-    pT2->runAction(to1);
+    pT2->runAction(to1);*/
+    hp2 = chp2;
+    pT2->runAction(ProgressTo::create(0.5f, hp2 / battle_system->fighters[1]->max_hp));
   }
 }
