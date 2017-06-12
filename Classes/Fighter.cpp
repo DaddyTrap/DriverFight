@@ -16,7 +16,7 @@ const std::list<Fighter::State> Fighter::VALID_NEXT_STATE[8] = {
   { /*Fighter::State::IDLE,*/ Fighter::State::STUN },                                                   // ATTACK
   { Fighter::State::IDLE, Fighter::State::JUMP, Fighter::State::DEFENCE, Fighter::State::STUN, Fighter::State::ATTACK, Fighter::State::DEFENCE },  // MOVE
   { Fighter::State::IDLE, Fighter::State::JUMP },                                                                         // STUN
-  { Fighter::State::IDLE, Fighter::State::MOVE, Fighter::State::DEFENCE },                                                   // DEFENCE
+  { Fighter::State::IDLE, Fighter::State::MOVE, Fighter::State::JUMP },                                                   // DEFENCE
   { Fighter::State::IDLE, Fighter::State::STUN, Fighter::State::ATTACK }                            // SQUAT
 };
 
@@ -106,6 +106,9 @@ void Fighter::setSkills(const std::string & filepath) {
 
 void Fighter::update(float dt) {
   BaseSprite::update(dt);
+
+  auto thisPos = getPosition();
+
   // 状态时间变化
   if (state_time > 0.0f) {
     // 只有stun和attack会由时间触发状态转变，且会转变为idle
@@ -128,12 +131,12 @@ void Fighter::update(float dt) {
   }
 
   // 垂直移动状态
-  if (fabs(this->getPosition().y) > 0.01) { // 垂直运动未停止
+  if (fabs(thisPos.y) > 0.01) { // 垂直运动未停止
     velocity.y -= G * dt;
   }
   // 移动状态
   // 判断是否着地 (如需改变“地”高度，则改变BattleSystem的高度)
-  auto predict_pos = this->getPosition() + velocity * dt;
+  auto predict_pos = thisPos + velocity * dt;
   if (predict_pos.y <= 0.0f) {
     // 已着地，使其稳健着地并去掉垂直速度
     predict_pos.y = 0.0f;
@@ -146,10 +149,11 @@ void Fighter::update(float dt) {
       }
     }
   } else {
-    setState(JUMP);
+    if (!c_holding)
+      setState(JUMP);
   }
   if (predict_pos.x <= 0 || predict_pos.x >= 800.0f) {
-    predict_pos.x = this->getPositionX();
+    predict_pos.x = thisPos.x;
   }
   this->setPosition(predict_pos); // 真正设置移动后位置
 

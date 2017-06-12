@@ -23,7 +23,7 @@ void BattleSystem::update(float dt) {
     toadd_attacks.clear();
   }
 
-  auto dispatcher = Director::getInstance()->getEventDispatcher();
+  //auto dispatcher = Director::getInstance()->getEventDispatcher();
   // ¼ì²â¹¥»÷ÊÇ·ñÓëFighterÅö×²
   for (auto &i : attacks) {
     // Åö×²¼ì²â
