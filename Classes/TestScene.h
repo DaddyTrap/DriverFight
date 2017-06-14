@@ -25,8 +25,10 @@ private:
   void addListener();
   void onKeyPressed(EventKeyboard::KeyCode code, Event *ev);
   void onKeyReleased(EventKeyboard::KeyCode code, Event *ev);
-
+  void BackCallback(Ref* ps);
   void update(float dt) override;
+  void GameOver();
+  bool end;
 };
 
 #endif

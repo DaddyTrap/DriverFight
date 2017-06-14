@@ -22,7 +22,8 @@ bool AboutScene::init() {
   if (!Layer::init()) {
     return false;
   }
-  
+  auto back = LayerColor::create(Color4B(255,255,255,110));
+  addChild(back, 1);
   Size visibleSize = Director::getInstance()->getVisibleSize();
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
   auto bg = Sprite::create("menubg.png");
@@ -51,7 +52,7 @@ bool AboutScene::init() {
   cliper->setStencil(shap);
   cliper->setAnchorPoint(ccp(.5, .5));
   cliper->setPosition(ccp(0, 0));
-  addChild(cliper);
+  addChild(cliper,2);
   //把要滚动的文字加入到裁剪区域  
   cliper->addChild(text);
 

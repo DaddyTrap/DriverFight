@@ -29,7 +29,8 @@ bool GuidanceScene::init() {
   bg->setScale(visibleSize.width / bg->getContentSize().width);
   bg->setPosition(visibleSize / 2);
   this->addChild(bg, 0);
-
+  auto back = LayerColor::create(Color4B(255, 255, 255, 110));
+  addChild(back, 1);
   auto blackItem = MenuItem::create(CC_CALLBACK_1(GuidanceScene::BackCallback, this));
   blackItem->setPosition(visibleSize.width / 2, visibleSize.height / 2);
   blackItem->setContentSize(visibleSize);//设置大小为整个屏幕的大小
@@ -41,7 +42,7 @@ bool GuidanceScene::init() {
   text = Label::createWithTTF("Guidance\nFor player1, WASD->move, J->punch, K->kick\nFor player2, Arrows->move, 1->punch, 2->kick\n", "fonts/LiheiPro.ttf", 30);
   text->setPosition(Vec2(visibleSize/2));
   text->setColor(Color3B::BLACK);
-  this->addChild(text);
+  this->addChild(text,2);
 
   //文字滚动，超出范围后从新开始  
   return true;
