@@ -96,6 +96,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
   audio->preloadEffect("sounds/switch.mp3");
   audio->preloadEffect("sounds/deep_dark_fantasy.mp3");
   audio->preloadEffect("sounds/hit.mp3");
+  audio->preloadEffect("sounds/fireball.mp3");
 
 
   // load resources
@@ -176,6 +177,15 @@ bool AppDelegate::applicationDidFinishLaunching() {
     frames.pushBack(SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(i * 300, 0, 300, 300))));
   }
   anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.04f), "fighter_defence");
+  frames.clear();
+
+  // load death resource
+  texture = director->getTextureCache()->addImage("animations/fighter_death.png");
+  // death animation
+  for (int i = 0; i < 7; ++i) {
+    frames.pushBack(SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(i * 300, 0, 300, 300))));
+  }
+  anicache->addAnimation(Animation::createWithSpriteFrames(frames, 0.1f), "fighter_death");
   frames.clear();
 
   // run

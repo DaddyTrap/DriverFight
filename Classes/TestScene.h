@@ -27,7 +27,7 @@ private:
   void onKeyReleased(EventKeyboard::KeyCode code, Event *ev);
   void BackCallback(Ref* ps);
   void update(float dt) override;
-  void GameOver();
+  void GameOver(int state);
   bool end;
 };
 

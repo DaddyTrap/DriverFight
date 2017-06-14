@@ -35,7 +35,7 @@ public:
   static Fighter* create(int max_hp, int max_spc, const std::list<Skill*> &skills = {}, const Rect &bounding = {}, BattleSystem *system = nullptr);
 
   enum State {
-    IDLE, JUMP, JUMP2, ATTACK, MOVE, STUN, DEFENCE, SQUAT
+    IDLE, JUMP, JUMP2, ATTACK, MOVE, STUN, DEFENCE, SQUAT, DEATH
   };
 
   enum AttackType {
@@ -50,7 +50,7 @@ public:
   // std::shared_ptr<SkillManager> _skill_manager; // 技能管理
   bool flip = false;
   bool dir = true; // right is true, left is false
-  Animation *idle_animation, *move_animation, *jump_animation, *attack_animations[8], *stun_animation, *defence_animation;
+  Animation *idle_animation, *move_animation, *jump_animation, *attack_animations[8], *stun_animation, *defence_animation, *death_animation;
   AttackInfo punch_info, kick_info, fireball_info;
 
   static const std::list<State> VALID_NEXT_STATE[8];

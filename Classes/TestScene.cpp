@@ -89,6 +89,7 @@ bool TestScene::init() {
   fighter->jump_animation = AnimationCache::getInstance()->getAnimation("fighter_jump");
   fighter->stun_animation = AnimationCache::getInstance()->getAnimation("fighter_stun");
   fighter->defence_animation = AnimationCache::getInstance()->getAnimation("fighter_defence");
+  fighter->death_animation = AnimationCache::getInstance()->getAnimation("fighter_death");
   fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
   fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
   fighter->attack_animations[2] = AnimationCache::getInstance()->getAnimation("fighter_skill");
@@ -99,7 +100,8 @@ bool TestScene::init() {
   fighter->kick_info = kick_info;
   fighter->fireball_info = fireball_info;
   battle_system->setFighter(fighter, 0);
-  fighter->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2));
+  fighter->setPosition(Vec2(origin.x + visibleSize.width / 2 - 300.0f, origin.y + visibleSize.height / 2));
+  fighter->setDir(true);
 
   fighter = Fighter::create(1000, 1000);
   fighter->setSkills("skills/fighter_skill.json");
@@ -109,6 +111,7 @@ bool TestScene::init() {
   fighter->jump_animation = AnimationCache::getInstance()->getAnimation("fighter_jump");
   fighter->stun_animation = AnimationCache::getInstance()->getAnimation("fighter_stun");
   fighter->defence_animation = AnimationCache::getInstance()->getAnimation("fighter_defence");
+  fighter->death_animation = AnimationCache::getInstance()->getAnimation("fighter_death");
   fighter->attack_animations[0] = AnimationCache::getInstance()->getAnimation("fighter_punch");
   fighter->attack_animations[1] = AnimationCache::getInstance()->getAnimation("fighter_kick");
   fighter->attack_animations[2] = AnimationCache::getInstance()->getAnimation("fighter_skill");
@@ -175,6 +178,8 @@ bool TestScene::init() {
 
 
 void TestScene::BackCallback(Ref* ps) {
+  unschedule(schedule_selector(TestScene::update));
+  _eventDispatcher->removeEventListenersForType(EventListener::Type::KEYBOARD);
   Director::getInstance()->replaceScene(CCTransitionFade::create(0.5, StartMenu::createScene()));
 }
 void TestScene::addListener() {
@@ -213,13 +218,26 @@ void TestScene::update(float dt) {
     hp2 = chp2;
     pT2->runAction(ProgressTo::create(0.5f, hp2 * 100 / battle_system->fighters[1]->max_hp));
   }
-  if (battle_system->isGameOver() && !end) {
+  int res;
+  if ((res = battle_system->isGameOver()) && !end) {
     end = true;
-    GameOver();
+    GameOver(res);
   }
 }
 
-void TestScene::GameOver() {
+void TestScene::GameOver(int state) {
+  switch (state) {
+  case -1:
+    break;
+  case 1:
+    battle_system->fighters[1]->setState(Fighter::DEATH, -1.0f, true);
+    break;
+  case 2:
+    battle_system->fighters[0]->setState(Fighter::DEATH, -1.0f, true);
+    break;
+  default:
+    break;
+  }
   unschedule(schedule_selector(TestScene::update));
   _eventDispatcher->removeEventListenersForType(EventListener::Type::KEYBOARD);
   auto audio = SimpleAudioEngine::getInstance();

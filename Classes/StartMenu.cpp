@@ -64,7 +64,7 @@ bool StartMenu::init() {
   auto item1 = MenuItemImage::create("start.jpg", "start.jpg", CC_CALLBACK_1(StartMenu::menuItem1Callback, this));
   auto item2 = MenuItemImage::create("about.jpg", "about.jpg", CC_CALLBACK_1(StartMenu::menuItem2Callback, this));
   auto item3 = MenuItemImage::create("end.jpg", "end.jpg", CC_CALLBACK_1(StartMenu::menuItem3Callback, this));
-  auto item4 = MenuItemImage::create("end.jpg", "end.jpg", CC_CALLBACK_1(StartMenu::menuItem4Callback, this));
+  auto item4 = MenuItemImage::create("manual.jpg", "manual.jpg", CC_CALLBACK_1(StartMenu::menuItem4Callback, this));
   RotateMenu *menu = RotateMenu::create();
 
   menu->addMenuItem(item1);
@@ -80,7 +80,8 @@ bool StartMenu::init() {
   // 3. add your codes below...  
 
   auto audio = SimpleAudioEngine::getInstance();
-  audio->playBackgroundMusic("sounds/bgm.mp3", true);
+  /*if (!audio->isBackgroundMusicPlaying())
+    audio->playBackgroundMusic("sounds/bgm.mp3", true);*/
 
   return true;
 }

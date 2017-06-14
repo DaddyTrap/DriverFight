@@ -348,6 +348,7 @@ void Fighter::triggerSkill(Skill::SkillEventArgs args) {
   this->atk_type = SKILL;
   if (this->setState(ATTACK)) {
     this->spawnAttack(this->fireball_info, "attacks/fireball.png");
+    audio->playEffect("sounds/hit.mp3");
   }
 }
 
@@ -399,6 +400,11 @@ bool Fighter::setState(Fighter::State next_state, float time, bool force) {
     case DEFENCE:
       this->stopAllActions();
       this->runAction(Animate::create(defence_animation));
+      break;
+    case DEATH:
+      this->stopAllActions();
+      this->runAction(Animate::create(death_animation));
+      break;
     default:
       break;
     }
