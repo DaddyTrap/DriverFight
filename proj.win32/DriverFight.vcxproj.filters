@@ -10,6 +10,15 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\DriverFight">
+      <UniqueIdentifier>{e5d04275-1291-42ad-b038-935ccd3fc3ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scene">
+      <UniqueIdentifier>{e8ed8f95-ca9c-460d-89be-49490a8e17e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Util">
+      <UniqueIdentifier>{715cd503-4b5d-4f6e-b38b-6d9550d74d14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -18,8 +27,44 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\Skill.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SkillManager.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Fighter.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\BattleSystem.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Attack.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\BaseSprite.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AttackInfo.cpp">
+      <Filter>src\DriverFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AboutScene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameScene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TestScene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\RotateMenu.cpp">
+      <Filter>src\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\StartMenu.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GuidanceScene.cpp">
+      <Filter>src\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -29,8 +74,47 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\Classes\Skill.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SkillManager.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Fighter.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\BattleSystem.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Attack.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\BaseSprite.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AttackInfo.h">
+      <Filter>src\DriverFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AboutScene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameScene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TestScene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\RotateMenu.h">
+      <Filter>src\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\StartMenu.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GuidanceScene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Predefine.h">
+      <Filter>src\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,3 +1,5 @@
 Debug.win32/
 DriverFight.VC.VC.opendb
 DriverFight.VC.db
+proj.win32/.vs/
+Release.win32/
