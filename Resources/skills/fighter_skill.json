@@ -2,9 +2,26 @@
   {
     "name": "fireball",
     "keys": [
-      ["DOWN", 6],
-      ["RIGHT", 6],
-      ["A", 10]
+      [ "DOWN", 6 ],
+      [ "RIGHT", 6 ],
+      [ "A", 10 ]
+    ]
+  },
+  {
+    "name": "waterball",
+    "keys": [
+      [ "DOWN", 6 ],
+      [ "RIGHT", 6 ],
+      [ "B", 10 ]
+    ]
+  },
+  {
+    "name": "thunderball",
+    "keys": [
+      [ "RIGHT", 6 ],
+      [ "RIGHT", 6 ],
+      [ "RIGHT", 6 ],
+      [ "B", 10 ]
     ]
   }
 ]

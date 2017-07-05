@@ -88,6 +88,7 @@ private:
   bool left_holding = false, right_holding = false, c_holding = false;
   State state = IDLE;
   AttackType atk_type = PUNCH;
+  ParticleExplosion *particle;
 };
 
 #endif // !__FIGHTER_H__

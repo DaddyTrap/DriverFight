@@ -347,7 +347,18 @@ void Fighter::triggerSkill(Skill::SkillEventArgs args) {
   CCLOG("Skill: %s", args.name.c_str());
   this->atk_type = SKILL;
   if (this->setState(ATTACK)) {
-    this->spawnAttack(this->fireball_info, "attacks/fireball.png");
+    if (args.name == "fireball") {
+      this->spawnAttack(this->fireball_info, "attacks/fireball.png");
+    } else if (args.name == "waterball") {
+      this->spawnAttack(this->fireball_info, "attacks/waterball.png");
+    } else if (args.name == "thunderball") {
+      this->spawnAttack(this->fireball_info, "attacks/thunderball.png");
+    }
+    particle = ParticleExplosion::create();
+    particle->setDuration(0.1f);
+    particle->setLife(0.2f);
+    particle->setPosition(Vec2(0 + this->getContentSize().width / 2, 0 + this->getContentSize().height / 2));
+    this->addChild(particle);
     audio->playEffect("sounds/hit.mp3");
   }
 }
